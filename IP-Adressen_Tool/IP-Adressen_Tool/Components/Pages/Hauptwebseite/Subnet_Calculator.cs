@@ -38,8 +38,25 @@ public static class Subnet_Calculator
         result.BroadcastAddress = AlsIp(broadcast);
         result.UsableHosts = Host_Berechnung.GetMaxHosts(cidr);
 
-        
+        if (cidr >= 32)
+        {
+            result.FirstHost = result.NetworkAddress;
+            result.LastHost = result.NetworkAddress;
+        }
+        else if (cidr == 31)
+        {
+            result.FirstHost = result.NetworkAddress;
+            result.LastHost = result.BroadcastAddress;
+        }
+        else
+        {
+            result.FirstHost = AlsIp(netz + 1);
+            result.LastHost = AlsIp(broadcast - 1);
+        }
+
+        return result;
     }
 
-    
+    private static string AlsIp(uint wert) =>
+        $"{(wert >> 24) & 255}.{(wert >> 16) & 255}.{(wert >> 8) & 255}.{wert & 255}";
 }
