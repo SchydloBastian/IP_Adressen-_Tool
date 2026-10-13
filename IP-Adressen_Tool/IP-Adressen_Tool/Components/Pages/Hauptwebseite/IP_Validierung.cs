@@ -61,6 +61,16 @@ public static class IP_Validierung
                 return false;
 
             }
+            if (!IPAddress.TryParse(ipString, out IPAddress? address) || address.AddressFamily != AddressFamily.InterNetwork)
+
+            {
+
+                errorMessage = "Ungültiges IPv4-Format.";
+
+                return false;
+
+            }
+
 
         }
 
