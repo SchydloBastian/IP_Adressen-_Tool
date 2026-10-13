@@ -28,6 +28,15 @@ public static class IP_Validierung
 
 
         string[] parts = ipString.Split('.');
+        if (parts.Length != 4)
+
+        {
+
+            errorMessage = "Eine IPv4-Adresse muss genau 4 Oktette besitzen.";
+
+            return false;
+
+        }
 
     }
 
