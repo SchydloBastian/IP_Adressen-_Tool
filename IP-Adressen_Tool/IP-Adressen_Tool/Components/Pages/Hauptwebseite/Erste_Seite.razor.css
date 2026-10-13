@@ -121,4 +121,63 @@
         }
 
 
+        .oktette input:focus {
+            outline: none;
+            border-color: var(--gruen);
+            background: #ffffff;
+            box-shadow: 0 0 0 5px rgba(31, 122, 77, 0.12);
+            transform: translateY(-2px) scale(1.03);
+        }
+
+.cidr-zeile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    background: var(--karte);
+    border: 1px solid var(--linie);
+    border-radius: 22px;
+    padding: 24px;
 }
+
+.cidr-badge {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--gruen-hell);
+    color: var(--gruen);
+    font-family: "IBM Plex Mono", Consolas, monospace;
+    font-size: 14px;
+    font-weight: 550;
+    animation: atem 2.6s ease-in-out infinite;
+    border: 1px solid black;
+    background-color: lightgoldenrodyellow;
+}
+
+.cidr-regler {
+    width: 100%;
+    height: 28px;
+    margin: 6px 0 20px;
+    accent-color: var(--gruen);
+    cursor: pointer;
+}
+
+.eingabe button {
+    position: relative;
+    width: 100%;
+    height: 54px;
+    overflow: hidden;
+    border: 0;
+    border-radius: 16px;
+    background: var(--gruen);
+    color: lightblue;
+    font-family: "Outfit", sans-serif;
+    font-size: 18px;
+    font-weight: 750;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: transform 0.18s ease, background 0.18s ease;
+    color: black;
+}
+
