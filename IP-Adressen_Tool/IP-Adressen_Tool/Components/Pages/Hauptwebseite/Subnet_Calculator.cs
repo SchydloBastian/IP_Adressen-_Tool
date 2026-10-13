@@ -1,5 +1,4 @@
 ﻿using System.Net;
-
 namespace IP_Adressen_Tool.Components.Pages.Hauptwebseite;
 
 public class SubnetResult
@@ -11,7 +10,6 @@ public class SubnetResult
     public long UsableHosts { get; set; }
     public string SubnetMask { get; set; } = "";
 }
-
 public static class Subnet_Calculator
 {
     public static SubnetResult Calculate(string ipString, int cidr)

@@ -1,8 +1,5 @@
-﻿body {
-    : root
-
-
-{
+﻿
+:root {
     --papier: #f7f1e8;
     --karte: #fffdf9;
     --tinte: #243027;
@@ -14,6 +11,7 @@
     --koralle-hell: #fff0eb;
     --schatten: 0 18px 40px rgba(70, 52, 28, 0.08);
 }
+
 
 .rechner {
     max-width: 820px;
