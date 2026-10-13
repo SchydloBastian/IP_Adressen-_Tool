@@ -14,6 +14,16 @@ public static class CIDR_Unterstuetzung
     }
 
 
-    
+    public static uint CidrToMaskUint(int cidr)
+
+    {
+
+        if (cidr <= 0) return 0;
+
+        if (cidr >= 32) return 0xFFFFFFFFu;
+
+        return 0xFFFFFFFFu << (32 - cidr);
+
+    }
 
 }
