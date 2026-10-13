@@ -1,5 +1,8 @@
-﻿
-:root {
+﻿body {
+    : root
+
+
+{
     --papier: #f7f1e8;
     --karte: #fffdf9;
     --tinte: #243027;
@@ -25,6 +28,7 @@
     animation: herein 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+
     .rechner h2 {
         margin: 0 0 22px;
         text-align: center;
@@ -36,6 +40,7 @@
         animation: titel 0.8s ease both;
     }
 
+
     .rechner h3 {
         margin: 0 0 8px;
         font-family: "Fraunces", Georgia, serif;
@@ -44,8 +49,7 @@
         letter-spacing: -0.03em;
     }
 
-.eingabe,
-.ergebnis {
+.eingabe, .ergebnis {
     background: var(--karte);
     border: 1px solid var(--linie);
     border-radius: 22px;
@@ -63,8 +67,7 @@
     animation: ergebnis-in 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.eingabe label,
-.cidr-zeile label {
+.eingabe label, .cidr-zeile label {
     display: block;
     margin-bottom: 10px;
     font-size: 13px;
@@ -81,11 +84,13 @@
     margin-bottom: 22px;
 }
 
+
     .oktette span {
         font-family: "Fraunces", Georgia, serif;
         font-size: 28px;
         color: #b7a892;
     }
+
 
     .oktette input {
         width: 78px;
@@ -98,21 +103,24 @@
         font-size: 22px;
         color: var(--tinte);
         transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-            background-color: lightgoldenrodyellow;
-
+        background-color: lightgoldenrodyellow;
     }
+
 
         .oktette input:hover {
             transform: translateY(-3px) rotate(-0.4deg);
         }
 
+
         .oktette input:nth-child(5):hover {
             transform: translateY(-3px) rotate(0.4deg);
         }
 
+
         .oktette input:nth-child(7):hover {
             transform: translateY(-3px) rotate(-0.3deg);
         }
+
 
         .oktette input:focus {
             outline: none;
@@ -174,6 +182,7 @@
     color: black;
 }
 
+
     .eingabe button::after {
         content: "";
         position: absolute;
@@ -182,14 +191,17 @@
         transform: translateX(-120%);
     }
 
+
     .eingabe button:hover {
         background: #18653f;
         transform: translateY(-2px);
     }
 
+
         .eingabe button:hover::after {
             animation: glanz 0.7s ease;
         }
+
 
     .eingabe button:active {
         transform: translateY(1px) scale(0.99);
@@ -216,37 +228,46 @@
     animation: zeile 0.45s ease both;
 }
 
+
     .ergebnis tr:nth-child(1) {
         animation-delay: 0.02s;
     }
+
 
     .ergebnis tr:nth-child(2) {
         animation-delay: 0.06s;
     }
 
+
     .ergebnis tr:nth-child(3) {
         animation-delay: 0.1s;
     }
+
 
     .ergebnis tr:nth-child(4) {
         animation-delay: 0.14s;
     }
 
+
     .ergebnis tr:nth-child(5) {
         animation-delay: 0.18s;
     }
+
 
     .ergebnis tr:nth-child(6) {
         animation-delay: 0.22s;
     }
 
+
     .ergebnis tr:nth-child(7) {
         animation-delay: 0.26s;
     }
 
+
     .ergebnis tr:nth-child(8) {
         animation-delay: 0.3s;
     }
+
 
     .ergebnis tr:nth-child(9) {
         animation-delay: 0.34s;
@@ -279,10 +300,12 @@
 }
 
 @keyframes herein {
+
     from {
         opacity: 0;
         transform: translateY(16px) scale(0.985);
     }
+
 
     to {
         opacity: 1;
@@ -291,10 +314,12 @@
 }
 
 @keyframes titel {
+
     from {
         opacity: 0;
         letter-spacing: 0.08em;
     }
+
 
     to {
         opacity: 1;
@@ -303,10 +328,12 @@
 }
 
 @keyframes karte {
+
     from {
         opacity: 0;
         transform: translateY(10px);
     }
+
 
     to {
         opacity: 1;
@@ -315,10 +342,12 @@
 }
 
 @keyframes ergebnis-in {
+
     from {
         opacity: 0;
         transform: translateY(14px);
     }
+
 
     to {
         opacity: 1;
@@ -327,10 +356,12 @@
 }
 
 @keyframes zeile {
+
     from {
         opacity: 0;
         transform: translateX(8px);
     }
+
 
     to {
         opacity: 1;
@@ -339,9 +370,11 @@
 }
 
 @keyframes atem {
+
     0%, 100% {
         transform: scale(1);
     }
+
 
     50% {
         transform: scale(1.04);
@@ -349,9 +382,11 @@
 }
 
 @keyframes glanz {
+
     from {
         transform: translateX(-120%);
     }
+
 
     to {
         transform: translateX(120%);
@@ -359,21 +394,26 @@
 }
 
 @keyframes wackeln {
+
     0%, 100% {
         transform: translateX(0);
     }
+
 
     20% {
         transform: translateX(-5px);
     }
 
+
     40% {
         transform: translateX(5px);
     }
 
+
     60% {
         transform: translateX(-3px);
     }
+
 
     80% {
         transform: translateX(3px);
@@ -381,6 +421,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     *, *::before, *::after {
         animation: none !important;
         transition: none !important;
@@ -388,19 +429,23 @@
 }
 
 @media (max-width: 680px) {
+
     .rechner {
         margin: 12px;
         padding: 18px;
     }
 
+
         .rechner h2 {
             font-size: 32px;
         }
+
 
     .cidr-zeile, .ergebnis tr, .ergebnis td {
         display: block;
         width: auto;
     }
+
 
     .oktette input {
         width: 100%;
@@ -408,7 +453,9 @@
         font-size: 18px;
     }
 
+
     .ergebnis td:first-child {
         padding-bottom: 2px;
     }
 }
+
