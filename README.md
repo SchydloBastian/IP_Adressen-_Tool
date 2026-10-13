@@ -26,10 +26,10 @@ Dieses Projekt bietet eine Benutzeroberfläche für Netzwerkberechnungen und die
 
 | Name / Alias | Rolle / Hauptaufgaben |
 |---|---|
-| **Bastian** | Projekt-Setup, README.md, .....,  Subnetzberechnung |
-| **Mahdi** | HTML Hauptwebseite, Host berechnung |
-| **Marten** | IP-Validierung & Logik, CIDR unterstützung  |
-| **Hassan** | Dokumentation/Presentaion & CSS-Styling, Binärdarstellung |
+| **Bastian** | Projekt-Setup, |
+| **Mahdi** | HTML Hauptwebseite |
+| **Marten** | IP-Validierung & Logik |
+| **Hassan** | Dokumentation/Presentaion & CSS-Styling |
 
 *(Personen und Aufgaben können jederzeit angepasst werden.)*
 
