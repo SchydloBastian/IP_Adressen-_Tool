@@ -70,6 +70,28 @@ public static class IP_Validierung
                 return false;
 
             }
+            int first = address.GetAddressBytes()[0];
+
+            if (ipString == "0.0.0.0") addressClass = "Special / This Network";
+
+            else if (ipString == "255.255.255.255") addressClass = "Special / Limited Broadcast";
+
+            else if (first == 127) addressClass = "Special / Loopback";
+
+            else if (first is >= 1 and <= 126) addressClass = "Klasse A";
+
+            else if (first is >= 128 and <= 191) addressClass = "Klasse B";
+
+            else if (first is >= 192 and <= 223) addressClass = "Klasse C";
+
+            else if (first is >= 224 and <= 239) addressClass = "Klasse D (Multicast)";
+
+            else if (first is >= 240 and <= 255) addressClass = "Klasse E (Forschung / Reserviert)";
+
+            else addressClass = "Unbekannt";
+
+
+            return true;
 
 
         }
