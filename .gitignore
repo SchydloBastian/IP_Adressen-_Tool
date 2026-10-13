@@ -1,0 +1,33 @@
+# Visual Studio / IDE-Dateien
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# .NET Build-Verzeichnisse und Ausgaben
+bin/
+obj/
+[Bb]in/
+[Oo]bj/
+
+# Benutzer-spezifische Dotnet-Einstellungen
+*.rsuser
+*.pubxml
+*.publishsettings
+
+# Diagnose und Logs
+*.log
+*.cache
+project.lock.json
+project.fragment.lock.json
+
+# OS-spezifische Dateien
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
