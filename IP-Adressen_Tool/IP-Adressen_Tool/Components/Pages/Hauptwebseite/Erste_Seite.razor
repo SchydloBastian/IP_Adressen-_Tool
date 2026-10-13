@@ -1,5 +1,88 @@
 ﻿@page "/IP-Tool"
+@rendermode InteractiveServer
 
-<h3>IP-Rechner</h3>
+<div class="rechner">
+    <h2>IP-Subnetz-Rechner</h2>
 
-<p>Hier beginnt gleich das Programmieren.</p>
+    <div class="eingabe">
+        <label>IPv4-Adresse (4 Oktette):</label>
+        <div class="oktette">
+            <input type="number" min="0" max="255" @bind="octet1" @bind:event="oninput" />
+            <span>.</span>
+            <input type="number" min="0" max="255" @bind="octet2" @bind:event="oninput" />
+            <span>.</span>
+            <input type="number" min="0" max="255" @bind="octet3" @bind:event="oninput" />
+            <span>.</span>
+            <input type="number" min="0" max="255" @bind="octet4" @bind:event="oninput" />
+        </div>
+
+        <div class="cidr-zeile">
+            <label>CIDR-Präfix / Subnetzmaske:</label>
+            <span class="cidr-badge">/@cidrInput (@CIDR_Unterstuetzung.CidrToSubnetMask(cidrInput))</span>
+        </div>
+        <input class="cidr-regler" type="range" min="0" max="32" @bind="cidrInput" @bind:event="oninput" />
+
+        <button type="button" @onclick="Berechnen">Berechnen</button>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="fehler">@errorMessage</div>
+        }
+    </div>
+
+    @if (isCalculated && subnetResult is not null)
+    {
+        <div class="ergebnis">
+            <h3>Berechnungsergebnisse</h3>
+            <table>
+                <tr><td>Eingegebene IP-Adresse</td><td>@fullIpAddress / @cidrInput</td></tr>
+                <tr><td>Binärdarstellung (IP)</td><td class="mono">@binaryIp</td></tr>
+                <tr><td>Binärdarstellung (Subnetzmaske)</td><td class="mono">@binaryMask</td></tr>
+                <tr><td>Adressklasse</td><td>@addressClass</td></tr>
+                <tr><td>Subnetzmaske (CIDR / Dezimal)</td><td>@subnetResult.SubnetMask (/ @cidrInput)</td></tr>
+                <tr><td>Netzwerkadresse</td><td>@subnetResult.NetworkAddress</td></tr>
+                <tr><td>Broadcast-Adresse</td><td>@subnetResult.BroadcastAddress</td></tr>
+                <tr><td>Nutzbarer Host-Bereich</td><td>@subnetResult.FirstHost – @subnetResult.LastHost</td></tr>
+                <tr><td>Maximal nutzbare Hosts</td><td>@subnetResult.UsableHosts</td></tr>
+            </table>
+        </div>
+    }
+</div>
+
+@code {
+    private int octet1 = 192;
+    private int octet2 = 168;
+    private int octet3 = 1;
+    private int octet4 = 10;
+    private int cidrInput = 24;
+
+    private string errorMessage = "";
+    private string addressClass = "";
+    private string binaryIp = "";
+    private string binaryMask = "";
+    private bool isCalculated;
+    private SubnetResult? subnetResult;
+
+    private string fullIpAddress => $"{octet1}.{octet2}.{octet3}.{octet4}";
+
+    private void Berechnen()
+    {
+        errorMessage = "";
+        isCalculated = false;
+        subnetResult = null;
+
+        if (octet1 < 0 || octet1 > 255 || octet2 < 0 || octet2 > 255 || octet3 < 0 || octet3 > 255 || octet4 < 0 || octet4 > 255)
+        {
+            errorMessage = "Jedes Oktett muss zwischen 0 und 255 liegen.";
+            return;
+        }
+
+        if (!IP_Validierung.TryValidateIPv4(fullIpAddress, out errorMessage, out addressClass))
+            return;
+
+        subnetResult = Subnet_Calculator.Calculate(fullIpAddress, cidrInput);
+        binaryIp = Binaerdarstellung.ToBinary(fullIpAddress);
+        binaryMask = Binaerdarstellung.ToBinary(subnetResult.SubnetMask);
+        isCalculated = true;
+    }
+}
