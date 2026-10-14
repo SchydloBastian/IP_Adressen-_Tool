@@ -16,4 +16,18 @@
 <input type="number" min="0" max="255" @bind="octet4" @bind:event="oninput" />
 </div>
  
-        
+        <div class="cidr-zeile">
+<label>CIDR-Präfix / Subnetzmaske:</label>
+<span class="cidr-badge">/@cidrInput (@CIDR_Unterstuetzung.CidrToSubnetMask(cidrInput))</span>
+</div>
+<input class="cidr-regler" type="range" min="0" max="32" @bind="cidrInput" @bind:event="oninput" />
+ 
+        <button type="button" @onclick="Berechnen">Berechnen</button>
+ 
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+<div class="fehler">@errorMessage</div>
+        }
+</div>
+ 
+   
