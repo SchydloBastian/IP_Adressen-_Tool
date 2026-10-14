@@ -1,1 +1,19 @@
-﻿
+﻿@page "/IP-Tool"
+@rendermode InteractiveServer
+ 
+<div class="rechner">
+<h2>IP-Subnetz-Rechner</h2>
+ 
+    <div class="eingabe">
+<label>IPv4-Adresse (4 Oktette):</label>
+<div class="oktette">
+<input type="number" min="0" max="255" @bind="octet1" @bind:event="oninput" />
+<span>.</span>
+<input type="number" min="0" max="255" @bind="octet2" @bind:event="oninput" />
+<span>.</span>
+<input type="number" min="0" max="255" @bind="octet3" @bind:event="oninput" />
+<span>.</span>
+<input type="number" min="0" max="255" @bind="octet4" @bind:event="oninput" />
+</div>
+ 
+        
