@@ -30,4 +30,22 @@
         }
 </div>
  
-   
+    @if (isCalculated && subnetResult is not null)
+    {
+<div class="ergebnis">
+<h3>Berechnungsergebnisse</h3>
+<table>
+<tr><td>Eingegebene IP-Adresse</td><td>@fullIpAddress / @cidrInput</td></tr>
+<tr><td>Binärdarstellung (IP)</td><td class="mono">@binaryIp</td></tr>
+<tr><td>Binärdarstellung (Subnetzmaske)</td><td class="mono">@binaryMask</td></tr>
+<tr><td>Adressklasse</td><td>@addressClass</td></tr>
+<tr><td>Subnetzmaske (CIDR / Dezimal)</td><td>@subnetResult.SubnetMask (/ @cidrInput)</td></tr>
+<tr><td>Netzwerkadresse</td><td>@subnetResult.NetworkAddress</td></tr>
+<tr><td>Broadcast-Adresse</td><td>@subnetResult.BroadcastAddress</td></tr>
+<tr><td>Nutzbarer Host-Bereich</td><td>@subnetResult.FirstHost – @subnetResult.LastHost</td></tr>
+<tr><td>Maximal nutzbare Hosts</td><td>@subnetResult.UsableHosts</td></tr>
+</table>
+</div>
+    }
+</div>
+ 
