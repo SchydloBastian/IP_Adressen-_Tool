@@ -49,3 +49,20 @@
     }
 </div>
  
+@code {
+    private int octet1 = 192;
+    private int octet2 = 168;
+    private int octet3 = 1;
+    private int octet4 = 10;
+    private int cidrInput = 24;
+ 
+    private string errorMessage = "";
+    private string addressClass = "";
+    private string binaryIp = "";
+    private string binaryMask = "";
+    private bool isCalculated;
+    private SubnetResult? subnetResult;
+ 
+    private string fullIpAddress => $"{octet1}.{octet2}.{octet3}.{octet4}";
+ 
+}
