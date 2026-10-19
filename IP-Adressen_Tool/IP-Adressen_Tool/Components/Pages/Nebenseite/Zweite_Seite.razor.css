@@ -1,0 +1,40 @@
+﻿.seite {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 90vh;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.haupt-bereich {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+}
+
+.rechner {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    padding: 30px;
+    width: 650px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+    .rechner h2 {
+        text-align: center;
+        color: #1a3c34;
+        margin-bottom: 25px;
+        font-size: 24px;
+    }
+
+.eingabe {
+    background-color: #e0f7fa;
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+   
