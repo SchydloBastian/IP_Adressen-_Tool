@@ -37,4 +37,62 @@
     margin-bottom: 20px;
 }
 
-   
+    .eingabe label {
+        display: block;
+        font-weight: bold;
+        font-size: 13px;
+        color: #004d40;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+.ipv6-input {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 15px;
+    background-color: #fffde7;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    outline: none;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+}
+
+    .ipv6-input:focus {
+        border-color: #00796b;
+        box-shadow: 0 0 5px rgba(0, 121, 107, 0.2);
+    }
+
+button {
+    background-color: #1a3c34;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+    button:hover {
+        background-color: #2e7d32;
+    }
+
+.fehler {
+    color: #d32f2f;
+    font-size: 13px;
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+.ergebnis {
+    margin-top: 25px;
+    background-color: #e0f7fa;
+    border-radius: 15px;
+    padding: 20px;
+}
+
+    
+    
