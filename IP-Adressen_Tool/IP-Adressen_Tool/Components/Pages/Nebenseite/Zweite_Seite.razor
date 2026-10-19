@@ -24,6 +24,31 @@
 <div class="fehler">@result.ErrorMessage</div>
                 }
 </div>
+ 
+            @if (result.IsValid)
+            {
+<div class="ergebnis">
+<h3>Konvertierungsergebnisse</h3>
+<table>
+<tr>
+<td>Komprimiert (Standard)</td>
+<td>@result.CompressedIPv6</td>
+</tr>
+<tr>
+<td>Vollständig (Expandiert)</td>
+<td>@result.FullIPv6</td>
+</tr>
+<tr>
+<td>Binärdarstellung (128 Bit)</td>
+<td class="mono">@result.BinaryIPv6</td>
+</tr>
+</table>
+</div>
+            }
+</div> <!-- Ende rechner -->
+ 
+    </div>
+</div>
 
 @code {
 
