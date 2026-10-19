@@ -1,5 +1,7 @@
 ﻿@page "/IP-Tool"
 @rendermode InteractiveServer
+@using IP_Adressen_Tool.Components.Pages.Nebenseite
+
 <div class="haupt-bereich">
     <div class="rechner">
         <h2>IP-Subnetz-Rechner</h2>
@@ -28,6 +30,18 @@
             {
                 <div class="fehler">@errorMessage</div>
             }
+        </div>
+        <div class="eigene-ip-bereich">
+            <button type="button" class="ip-btn" @onclick="EigeneIpInOktetteEinfuegen">
+                @if (string.IsNullOrEmpty(erkannteIp))
+                {
+                    <span>Eigene IP ermitteln & einfügen</span>
+                }
+                else
+                {
+                    <span>Eigene IP (@erkannteIp) einfügen</span>
+                }
+            </button>
         </div>
 
         @if (isCalculated && subnetResult is not null)
