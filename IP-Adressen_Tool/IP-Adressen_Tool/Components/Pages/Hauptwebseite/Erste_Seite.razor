@@ -1,5 +1,7 @@
 ﻿@page "/IP-Tool"
 @rendermode InteractiveServer
+@using IP_Adressen_Tool.Components.Pages.Nebenseite
+
 <div class="haupt-bereich">
     <div class="rechner">
         <h2>IP-Subnetz-Rechner</h2>
@@ -28,6 +30,18 @@
             {
                 <div class="fehler">@errorMessage</div>
             }
+        </div>
+        <div class="eigene-ip-bereich">
+            <button type="button" class="ip-btn" @onclick="EigeneIpInOktetteEinfuegen">
+                @if (string.IsNullOrEmpty(erkannteIp))
+                {
+                    <span>Eigene IP ermitteln & einfügen</span>
+                }
+                else
+                {
+                    <span>Eigene IP (@erkannteIp) einfügen</span>
+                }
+            </button>
         </div>
 
         @if (isCalculated && subnetResult is not null)
@@ -99,6 +113,39 @@
         binaryMask = Binaerdarstellung.ToBinary(subnetResult.SubnetMask);
         standort = await IP_Geolocation.LookupAsync(fullIpAddress);
         isCalculated = true;
+    }
+
+    @code {
+        private int octtet1 = 192;
+        private int octtet2 = 168;
+        private int octtet3 = 1;
+        private int octtet4 = 10;
+
+        private string erkannteIp = "";
+
+        protected override async Task OnInitializedAsync()
+        {
+            // Beim Laden der Seite direkt die eigene öffentliche/lokale IP abfragen
+            erkannteIp = await EigeneIP_Helper.GetOeffentlicheIPAsync();
+        }
+
+        private void EigeneIpInOktetteEinfuegen()
+        {
+            if (string.IsNullOrWhiteSpace(erkannteIp))
+            {
+                erkannteIp = EigeneIP_Helper.GetLokaleIP();
+            }
+
+            // Teilt die IP anhand der Punkte auf (z. B. "192.168.1.50")
+            var teile = erkannteIp.Split('.');
+            if (teile.Length == 4)
+            {
+                int.TryParse(teile[0], out octtet1);
+                int.TryParse(teile[1], out octtet2);
+                int.TryParse(teile[2], out octtet3);
+                int.TryParse(teile[3], out octtet4);
+            }
+        }
     }
 
 
