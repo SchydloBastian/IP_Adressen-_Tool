@@ -42,15 +42,16 @@ public static class IPv4_zu_IPv6_Converter
             mappedBytes[13] = bytes[1];
             mappedBytes[14] = bytes[2];
             mappedBytes[15] = bytes[3];
+
             result.MappedIPv6 = new IPAddress(mappedBytes).ToString();
 
             string hexPart = $"{bytes[0]:X2}{bytes[1]:X2}:{bytes[2]:X2}{bytes[3]:X2}";
             result.Translated6to4 = $"2002:{hexPart}::";
 
-            result.BinaryRepresentation = $"{Convert.ToString(bytes[0], 2).PadLeft(8, '0')}." +
-                                           $"{Convert.ToString(bytes[1], 2).PadLeft(8, '0')}." +
-                                           $"{Convert.ToString(bytes[2], 2).PadLeft(8, '0')}." +
-                                           $"{Convert.ToString(bytes[3], 2).PadLeft(8, '0')}";
+            result.BinaryRepresentation = $"{System.Convert.ToString(bytes[0], 2).PadLeft(8, '0')}." +
+                                           $"{System.Convert.ToString(bytes[1], 2).PadLeft(8, '0')}." +
+                                           $"{System.Convert.ToString(bytes[2], 2).PadLeft(8, '0')}." +
+                                           $"{System.Convert.ToString(bytes[3], 2).PadLeft(8, '0')}";
 
             result.IsValid = true;
         }
