@@ -34,15 +34,15 @@
         <div class="eigene-ip-bereich">
             <button type="button" class="ip-btn" @onclick="EigeneIpInOktetteEinfuegen">
                 @if (string.IsNullOrEmpty(erkannteIp))
-                {
-                    <span>Eigene IP ermitteln & einfügen</span>
-                }
-                else
-                {
-                    <span>Eigene IP (@erkannteIp) einfügen</span>
-                }
+             {
+            <span>Eigene IP ermitteln & einfügen</span>
+             }
+            else
+            {
+            <span>Eigene IP (@erkannteIp) einfügen</span>
+            }
             </button>
-        </div>
+            </div>
 
         @if (isCalculated && subnetResult is not null)
         {
