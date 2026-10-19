@@ -133,3 +133,35 @@ button {
     color: #00695c;
 }
 
+.seiten-pfeil {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #fffde7;
+    color: #333333;
+    border: 1px solid #dcdcdc;
+    padding: 14px 22px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+    .seiten-pfeil:hover {
+        background-color: #fff9c4;
+        transform: translateX(-6px);
+    }
+
+    .seiten-pfeil .pfeil-bild-zurueck {
+        width: 18px;
+        height: auto;
+        transform: scaleX(-1); 
+        transition: transform 0.3s ease;
+    }
+
+    .seiten-pfeil:hover .pfeil-bild-zurueck {
+        transform: scaleX(-1) translateX(5px);
+    }
