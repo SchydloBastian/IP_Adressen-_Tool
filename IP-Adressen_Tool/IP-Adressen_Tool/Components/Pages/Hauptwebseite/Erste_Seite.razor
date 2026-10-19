@@ -68,7 +68,7 @@
     private int octet3 = 1;
     private int octet4 = 10;
     private int cidrInput = 24;
- 
+
     private string errorMessage = "";
     private string addressClass = "";
     private string binaryIp = "";
@@ -77,6 +77,13 @@
     private SubnetResult? subnetResult;
     private string fullIpAddress => $"{octet1}.{octet2}.{octet3}.{octet4}";
     private GeolocationResult? standort;
+
+    private string erkannteIp = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        erkannteIp = await EigeneIP_Helper.GetOeffentlicheIPAsync();
+    }
 
     private async Task Berechnen()
     {
@@ -92,7 +99,9 @@
         }
 
         if (!IP_Validierung.TryValidateIPv4(fullIpAddress, out errorMessage, out addressClass))
+        {
             return;
+        }
 
         subnetResult = Subnet_Calculator.Calculate(fullIpAddress, cidrInput);
         binaryIp = Binaerdarstellung.ToBinary(fullIpAddress);
@@ -101,5 +110,20 @@
         isCalculated = true;
     }
 
+    private void EigeneIpInOktetteEinfuegen()
+    {
+        if (string.IsNullOrWhiteSpace(erkannteIp))
+        {
+            erkannteIp = EigeneIP_Helper.GetLokaleIP();
+        }
 
+        var teile = erkannteIp.Split('.');
+        if (teile.Length == 4)
+        {
+            int.TryParse(teile[0], out octet1);
+            int.TryParse(teile[1], out octet2);
+            int.TryParse(teile[2], out octet3);
+            int.TryParse(teile[3], out octet4);
+        }
+    }
 }
