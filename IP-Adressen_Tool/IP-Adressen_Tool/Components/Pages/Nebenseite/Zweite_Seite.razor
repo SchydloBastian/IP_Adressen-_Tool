@@ -4,20 +4,26 @@
  
 <div class="seite">
 <div class="haupt-bereich">
-<!-- Zurück-Link links vom Converter -->
+ 
+        <!-- Zurück-Link -->
 <a class="seiten-pfeil" href="/IP-Tool">
 <img src="image/pfeil-icon-svg-download-png-97525.png" alt="Pfeil" class="pfeil-bild-zurueck" />
 <span>Zurück zum IP-Rechner</span>
 </a>
  
         <div class="rechner">
-<h2>IPv6 Converter</h2>
+<h2>IPv6 CIDR-Subnetz-Rechner</h2>
  
             <div class="eingabe">
-<label>IPv6-Adresse eingeben:</label>
-<input type="text" class="ipv6-input" placeholder="z. B. 2001:db8::8a2e:370:7334" @bind="ipv6Input" @bind:event="oninput" />
+<label>IPv6-Adresse:</label>
+<input type="text" class="ipv6-input" placeholder="2001:db8::1" @bind="ipInput" @bind:event="oninput" />
  
-                <button type="button" @onclick="Umwandeln">Umwandeln</button>
+                <div class="cidr-zeile">
+<label>CIDR-Präfix: /@prefixLength</label>
+</div>
+<input class="cidr-regler" type="range" min="0" max="128" @bind="prefixLength" @bind:event="oninput" />
+ 
+                <button type="button" @onclick="Berechnen">Berechnen</button>
  
                 @if (!string.IsNullOrEmpty(result.ErrorMessage))
                 {
@@ -28,34 +34,39 @@
             @if (result.IsValid)
             {
 <div class="ergebnis">
-<h3>Konvertierungsergebnisse</h3>
+<h3>Subnetz-Berechnungsergebnisse</h3>
 <table>
 <tr>
-<td>Komprimiert (Standard)</td>
-<td>@result.CompressedIPv6</td>
+<td>Eingegebene IP / Präfix</td>
+<td>@ipInput / /@prefixLength</td>
 </tr>
 <tr>
-<td>Vollständig (Expandiert)</td>
-<td>@result.FullIPv6</td>
+<td>Netzwerkadresse</td>
+<td class="mono">@result.NetworkAddress</td>
 </tr>
 <tr>
-<td>Binärdarstellung (128 Bit)</td>
-<td class="mono">@result.BinaryIPv6</td>
+<td>Letzte Host-Adresse</td>
+<td class="mono">@result.LastHost</td>
+</tr>
+<tr>
+<td>Gesamtanzahl Hosts</td>
+<td>@result.TotalHosts</td>
 </tr>
 </table>
 </div>
             }
-</div> <!-- Ende rechner -->
+</div>
  
     </div>
 </div>
-
-@code {
-    private string ipv6Input = "2001:db8::8a2e:370:7334";
-    private IPv6Result result = new();
  
-    private void Umwandeln()
+@code {
+    private string ipInput = "2001:db8::1";
+    private int prefixLength = 64;
+    private IPv6CIDRResult result = new();
+ 
+    private void Berechnen()
     {
-        result = IPv6_Converter.Convert(ipv6Input);
+        result = IPv6_CIDR_Rechner.Calculate(ipInput, prefixLength);
     }
 }
