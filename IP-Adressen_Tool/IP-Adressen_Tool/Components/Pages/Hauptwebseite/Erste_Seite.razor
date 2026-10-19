@@ -1,41 +1,38 @@
 ﻿@page "/IP-Tool"
 @rendermode InteractiveServer
  
-<div class="rechner">
-<h2>IP-Subnetz-Rechner</h2>
- 
-    <div class="eingabe">
-        <label>IPv4-Adresse (4 Oktette):</label>
-        <div class="oktette">
-        <input type="number" min="0" max="255" @bind="octet1" @bind:event="oninput" />
-        <span>.</span>
-        <input type="number" min="0" max="255" @bind="octet2" @bind:event="oninput" />
-        <span>.</span>
-        <input type="number" min="0" max="255" @bind="octet3" @bind:event="oninput" />
-        <span>.</span>
-        <input type="number" min="0" max="255" @bind="octet4" @bind:event="oninput" />
-    </div>
- 
-    <div class="cidr-zeile">
-        <label>CIDR-Präfix / Subnetzmaske:</label>
-        <span class="cidr-badge">/@cidrInput (@CIDR_Unterstuetzung.CidrToSubnetMask(cidrInput))</span>
-    </div>
-<input class="cidr-regler" type="range" min="0" max="32" @bind="cidrInput" @bind:event="oninput" />
- 
-        <button type="button" @onclick="Berechnen">Berechnen</button>
-        
-        <div class="seite">
-            <div class="rechner">
-                <a class="seiten-pfeil" href="/Zweite-Seite">→ IPv6 Converter</a>
-            </div>
-            <a class="seiten-pfeil" href="/Zweite-Seite">→ IPv6 Converter</a>
-        </div>
+    <div class="seite">
+    <div class="rechner">
+        <h2>IP-Subnetz-Rechner</h2>
 
-        @if (!string.IsNullOrEmpty(errorMessage))
-        {
-            <div class="fehler">@errorMessage</div>
-        }
-</div>
+        <div class="eingabe">
+            <label>IPv4-Adresse (4 Oktette):</label>
+            <div class="oktette">
+                <input type="number" min="0" max="255" @bind="octet1" @bind:event="oninput" />
+                <span>.</span>
+                <input type="number" min="0" max="255" @bind="octet2" @bind:event="oninput" />
+                <span>.</span>
+                <input type="number" min="0" max="255" @bind="octet3" @bind:event="oninput" />
+                <span>.</span>
+                <input type="number" min="0" max="255" @bind="octet4" @bind:event="oninput" />
+            </div>
+
+            <div class="cidr-zeile">
+                <label>CIDR-Präfix / Subnetzmaske:</label>
+                <span class="cidr-badge">/@cidrInput (@CIDR_Unterstuetzung.CidrToSubnetMask(cidrInput))</span>
+            </div>
+            <input class="cidr-regler" type="range" min="0" max="32" @bind="cidrInput" @bind:event="oninput" />
+
+
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="fehler">@errorMessage</div>
+            }
+        </div>
+        <button type="button" @onclick="Berechnen">Berechnen</button>
+        <a class="seiten-pfeil" href="/Zweite-Seite">→ IPv6 Converter</a>
+    </div>
  
     @if (isCalculated && subnetResult is not null)
     {
