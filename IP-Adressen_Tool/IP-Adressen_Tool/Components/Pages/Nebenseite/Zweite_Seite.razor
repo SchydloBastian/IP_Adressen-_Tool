@@ -5,7 +5,6 @@
 <div class="seite">
 <div class="haupt-bereich">
  
-        <!-- Zurück-Link -->
 <a class="seiten-pfeil" href="/IP-Tool">
 <img src="image/pfeil-icon-svg-download-png-97525.png" alt="Pfeil" class="pfeil-bild-zurueck" />
 <span>Zurück zum IP-Rechner</span>
@@ -52,6 +51,10 @@
 <td>Gesamtanzahl Hosts</td>
 <td>@result.TotalHosts</td>
 </tr>
+<tr>
+<td>IPv4 dotted-quad notation</td>
+<td class="mono">@shortVersion</td>
+</tr>
 </table>
 </div>
             }
@@ -61,10 +64,27 @@
 </div>
  
 @code {
+    [SupplyParameterFromQuery]
+    public string? Ip { get; set; }
+
     private string ipInput = "2001:db8::1";
+    private string shortVersion = ""; 
     private int prefixLength = 64;
     private IPv6CIDRResult result = new();
- 
+
+    protected override void OnInitialized()
+    {
+        if (!string.IsNullOrWhiteSpace(Ip))
+        {
+            var convResult = IPv4_zu_IPv6_Converter.Convert(Ip);
+            if (convResult.IsValid)
+            {
+                ipInput = convResult.FullIPv6;     
+                shortVersion = convResult.MappedIPv6; 
+            }
+        }
+    }
+
     private void Berechnen()
     {
         result = IPv6_CIDR_Rechner.Calculate(ipInput, prefixLength);

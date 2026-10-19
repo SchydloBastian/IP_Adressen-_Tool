@@ -8,7 +8,8 @@ public class IPv6Result
 {
     public bool IsValid { get; set; }
     public string ErrorMessage { get; set; } = "";
-    public string MappedIPv6 { get; set; } = "";
+    public string MappedIPv6 { get; set; } = "";          
+    public string FullIPv6 { get; set; } = "";            
     public string Translated6to4 { get; set; } = "";
     public string BinaryRepresentation { get; set; } = "";
 }
@@ -44,6 +45,11 @@ public static class IPv4_zu_IPv6_Converter
             mappedBytes[15] = bytes[3];
 
             result.MappedIPv6 = new IPAddress(mappedBytes).ToString();
+
+            result.FullIPv6 = $"{mappedBytes[0]:x2}{mappedBytes[1]:x2}:{mappedBytes[2]:x2}{mappedBytes[3]:x2}:" +
+                              $"{mappedBytes[4]:x2}{mappedBytes[5]:x2}:{mappedBytes[6]:x2}{mappedBytes[7]:x2}:" +
+                              $"{mappedBytes[8]:x2}{mappedBytes[9]:x2}:{mappedBytes[10]:x2}{mappedBytes[11]:x2}:" +
+                              $"{mappedBytes[12]:x2}{mappedBytes[13]:x2}:{mappedBytes[14]:x2}{mappedBytes[15]:x2}";
 
             string hexPart = $"{bytes[0]:X2}{bytes[1]:X2}:{bytes[2]:X2}{bytes[3]:X2}";
             result.Translated6to4 = $"2002:{hexPart}::";
