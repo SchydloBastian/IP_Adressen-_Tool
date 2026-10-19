@@ -51,5 +51,11 @@
 </div>
 
 @code {
-
+    private string ipv6Input = "2001:db8::8a2e:370:7334";
+    private IPv6Result result = new();
+ 
+    private void Umwandeln()
+    {
+        result = IPv6_Converter.Convert(ipv6Input);
+    }
 }
