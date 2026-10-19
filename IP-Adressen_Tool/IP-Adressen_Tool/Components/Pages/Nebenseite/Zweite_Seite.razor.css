@@ -94,5 +94,42 @@ button {
     padding: 20px;
 }
 
-    
-    
+    .ergebnis h3 {
+        margin-top: 0;
+        font-size: 16px;
+        color: #004d40;
+        margin-bottom: 15px;
+    }
+
+    .ergebnis table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .ergebnis tr {
+        border-bottom: 1px solid #b2dfdb;
+    }
+
+        .ergebnis tr:last-child {
+            border-bottom: none;
+        }
+
+    .ergebnis td {
+        padding: 10px 5px;
+        font-size: 14px;
+        color: #333333;
+    }
+
+        .ergebnis td:first-child {
+            font-weight: 600;
+            color: #004d40;
+            width: 45%;
+        }
+
+.mono {
+    font-family: monospace;
+    font-size: 13px;
+    word-break: break-all;
+    color: #00695c;
+}
+
