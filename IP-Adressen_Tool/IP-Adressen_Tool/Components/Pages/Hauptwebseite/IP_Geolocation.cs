@@ -14,3 +14,69 @@ public class GeolocationResult
     public string Koordinaten { get; set; } = "-";
 }
 
+public static class IP_Geolocation
+{
+    public static async Task<GeolocationResult> LookupAsync(string ipString)
+    {
+        if (IstPrivatOderSpezial(ipString))
+        {
+            return new GeolocationResult
+            {
+                Gefunden = false,
+                Text = "Kein Standort. Private, lokale oder spezielle Adresse."
+            };
+        }
+
+        try
+        {
+            using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(8) };
+            var daten = await client.GetFromJsonAsync<IpWhoAntwort>($"https://ipwho.is/{ipString}");
+
+            if (daten is null || !daten.Success)
+            {
+                return new GeolocationResult
+                {
+                    Gefunden = false,
+                    Text = "Standort konnte nicht ermittelt werden."
+                };
+            }
+
+            return new GeolocationResult
+            {
+                Gefunden = true,
+                Text = $"{daten.City}, {daten.Region}, {daten.Country}",
+                Land = daten.Country,
+                Region = daten.Region,
+                Stadt = daten.City,
+                Anbieter = daten.Connection?.Isp ?? "-",
+                Koordinaten = $"{daten.Latitude:0.####}, {daten.Longitude:0.####}"
+            };
+        }
+        catch
+        {
+            return new GeolocationResult
+            {
+                Gefunden = false,
+                Text = "Standortdienst nicht erreichbar."
+            };
+        }
+    }
+
+   
+
+    private sealed class IpWhoAntwort
+    {
+        public bool Success { get; set; }
+        public string Country { get; set; } = "";
+        public string Region { get; set; } = "";
+        public string City { get; set; } = "";
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public IpWhoVerbindung? Connection { get; set; }
+    }
+
+    private sealed class IpWhoVerbindung
+    {
+        public string Isp { get; set; } = "";
+    }
+}
