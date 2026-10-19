@@ -62,7 +62,21 @@ public static class IP_Geolocation
         }
     }
 
-   
+    private static bool IstPrivatOderSpezial(string ipString)
+    {
+        if (!IPAddress.TryParse(ipString, out IPAddress? adresse)) return true;
+        byte[] b = adresse.GetAddressBytes();
+        if (b.Length != 4) return true;
+
+        if (b[0] == 10) return true;
+        if (b[0] == 127) return true;
+        if (b[0] == 0) return true;
+        if (b[0] == 169 && b[1] == 254) return true;
+        if (b[0] == 192 && b[1] == 168) return true;
+        if (b[0] == 172 && b[1] >= 16 && b[1] <= 31) return true;
+        if (b[0] >= 224) return true;
+        return false;
+    }
 
     private sealed class IpWhoAntwort
     {
