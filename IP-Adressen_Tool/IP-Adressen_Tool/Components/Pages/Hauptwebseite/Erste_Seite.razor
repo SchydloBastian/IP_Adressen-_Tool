@@ -82,7 +82,7 @@
     private int octet3 = 1;
     private int octet4 = 10;
     private int cidrInput = 24;
- 
+
     private string errorMessage = "";
     private string addressClass = "";
     private string binaryIp = "";
@@ -91,6 +91,13 @@
     private SubnetResult? subnetResult;
     private string fullIpAddress => $"{octet1}.{octet2}.{octet3}.{octet4}";
     private GeolocationResult? standort;
+
+    private string erkannteIp = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        erkannteIp = await EigeneIP_Helper.GetOeffentlicheIPAsync();
+    }
 
     private async Task Berechnen()
     {
@@ -106,7 +113,9 @@
         }
 
         if (!IP_Validierung.TryValidateIPv4(fullIpAddress, out errorMessage, out addressClass))
+        {
             return;
+        }
 
         subnetResult = Subnet_Calculator.Calculate(fullIpAddress, cidrInput);
         binaryIp = Binaerdarstellung.ToBinary(fullIpAddress);
@@ -115,38 +124,20 @@
         isCalculated = true;
     }
 
-    @code {
-        private int octtet1 = 192;
-        private int octtet2 = 168;
-        private int octtet3 = 1;
-        private int octtet4 = 10;
-
-        private string erkannteIp = "";
-
-        protected override async Task OnInitializedAsync()
+    private void EigeneIpInOktetteEinfuegen()
+    {
+        if (string.IsNullOrWhiteSpace(erkannteIp))
         {
-            // Beim Laden der Seite direkt die eigene öffentliche/lokale IP abfragen
-            erkannteIp = await EigeneIP_Helper.GetOeffentlicheIPAsync();
+            erkannteIp = EigeneIP_Helper.GetLokaleIP();
         }
 
-        private void EigeneIpInOktetteEinfuegen()
+        var teile = erkannteIp.Split('.');
+        if (teile.Length == 4)
         {
-            if (string.IsNullOrWhiteSpace(erkannteIp))
-            {
-                erkannteIp = EigeneIP_Helper.GetLokaleIP();
-            }
-
-            // Teilt die IP anhand der Punkte auf (z. B. "192.168.1.50")
-            var teile = erkannteIp.Split('.');
-            if (teile.Length == 4)
-            {
-                int.TryParse(teile[0], out octtet1);
-                int.TryParse(teile[1], out octtet2);
-                int.TryParse(teile[2], out octtet3);
-                int.TryParse(teile[3], out octtet4);
-            }
+            int.TryParse(teile[0], out octet1);
+            int.TryParse(teile[1], out octet2);
+            int.TryParse(teile[2], out octet3);
+            int.TryParse(teile[3], out octet4);
         }
     }
-
-
 }
