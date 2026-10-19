@@ -7,13 +7,13 @@
         <div class="eingabe">
             <label>IPv4-Adresse (4 Oktette):</label>
             <div class="oktette">
-                <input type="number" min="0" max="255" @bind="octet1" @bind:event="oninput" />
+                <input class="oktett1" type="number" min="0" max="255" @bind="octet1" @bind:event="oninput" />
                 <span>.</span>
-                <input type="number" min="0" max="255" @bind="octet2" @bind:event="oninput" />
+                <input class="oktett2" type="number" min="0" max="255" @bind="octet2" @bind:event="oninput" />
                 <span>.</span>
-                <input type="number" min="0" max="255" @bind="octet3" @bind:event="oninput" />
+                <input class="oktett3" type="number" min="0" max="255" @bind="octet3" @bind:event="oninput" />
                 <span>.</span>
-                <input type="number" min="0" max="255" @bind="octet4" @bind:event="oninput" />
+                <input class="oktett4" type="number" min="0" max="255" @bind="octet4" @bind:event="oninput" />
             </div>
 
             <div class="cidr-zeile">
@@ -55,9 +55,9 @@
         }
     </div>
 
-    <a class="seiten-pfeil" href="/Zweite-Seite">
-        <img src="image/pfeil-icon-svg-download-png-97525.png" alt="Pfeil" class="pfeil-bild" />       
-        <span>IPv6 Converter</span>
+    <a class="seiten-pfeil" href="/Zweite-Seite?ip=@($"{octet1}.{octet2}.{octet3}.{octet4}")">
+        <span>Zum IPv6-Rechner</span>
+        <img src="image/pfeil-icon-svg-download-png-97525.png" alt="Pfeil" class="pfeil-bild" />
     </a>
 </div>
 
