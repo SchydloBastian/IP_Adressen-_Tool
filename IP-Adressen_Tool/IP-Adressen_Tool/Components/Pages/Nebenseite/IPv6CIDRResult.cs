@@ -49,5 +49,35 @@ public static class IPv6_CIDR_Rechner
         return new BigInteger(extended);
     }
  
-   
+    private static string BigIntToIPv6(BigInteger bigInt)
+    {
+        byte[] bytes = bigInt.ToByteArray();
+        byte[] ipBytes = new byte[16];
+        int copyLength = Math.Min(bytes.Length, 16);
+
+        Array.Copy(bytes, 0, ipBytes, 16 - copyLength, copyLength);
+
+        Array.Reverse(ipBytes);
+ 
+        var sb = new StringBuilder();
+
+        for (int i = 0; i < 16; i += 2)
+        {
+            ushort block = (ushort)((ipBytes[i] << 8) | ipBytes[i + 1]);
+
+            sb.Append(block.ToString("x4"));
+
+            if (i < 14) sb.Append(':');
+        }
+ 
+        if (IPAddress.TryParse(sb.ToString(), out IPAddress? addr))
+        {
+            return addr.ToString();
+
+        }
+        return sb.ToString();
+
+    }
+
+}
  
