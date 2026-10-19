@@ -26,10 +26,10 @@ Dieses Projekt bietet eine Benutzeroberfläche für Netzwerkberechnungen und die
 
 | Name / Alias | Rolle / Hauptaufgaben |
 |---|---|
-| **Bastian** | Projekt-Setup, Sebnet_Calculator |
-| **Mahdi** | HTML Hauptwebseite, Hostberechnung |
-| **Marten** | IP-Validierung & Logik, CIDR unterstützung |
-| **Hassan** | Dokumentation/Presentaion & CSS-Styling, Binärdarstellung |
+| **Bastian** | Projekt-Setup, Sebnet_Calculator, Projekt Erweiterung 2 |
+| **Mahdi** | HTML Hauptwebseite, Hostberechnung, HTML zweite Seite |
+| **Marten** | IP-Validierung & Logik, CIDR unterstützung, GeoLocation |
+| **Hassan** | Dokumentation/Presentaion & CSS-Styling, Binärdarstellung, IPv6 Converter |
 
 *(Personen und Aufgaben können jederzeit angepasst werden.)*
 
