@@ -44,6 +44,12 @@
 <tr><td>Broadcast-Adresse</td><td>@subnetResult.BroadcastAddress</td></tr>
 <tr><td>Nutzbarer Host-Bereich</td><td>@subnetResult.FirstHost – @subnetResult.LastHost</td></tr>
 <tr><td>Maximal nutzbare Hosts</td><td>@subnetResult.UsableHosts</td></tr>
+<tr><td>Standort</td><td>@standort?.Text</td></tr>
+<tr><td>Land</td><td>@standort?.Land</td></tr>
+<tr><td>Region</td><td>@standort?.Region</td></tr>
+<tr><td>Stadt</td><td>@standort?.Stadt</td></tr>
+<tr><td>Anbieter</td><td>@standort?.Anbieter</td></tr>
+<tr><td>Koordinaten</td><td>@standort?.Koordinaten</td></tr>
 </table>
 </div>
     }
@@ -62,26 +68,31 @@
     private string binaryMask = "";
     private bool isCalculated;
     private SubnetResult? subnetResult;
- 
     private string fullIpAddress => $"{octet1}.{octet2}.{octet3}.{octet4}";
-  private void Berechnen()
+    private GeolocationResult? standort;
+
+    private async Task Berechnen()
     {
         errorMessage = "";
         isCalculated = false;
         subnetResult = null;
- 
+        standort = null;
+
         if (octet1 < 0 || octet1 > 255 || octet2 < 0 || octet2 > 255 || octet3 < 0 || octet3 > 255 || octet4 < 0 || octet4 > 255)
         {
             errorMessage = "Jedes Oktett muss zwischen 0 und 255 liegen.";
             return;
         }
- 
+
         if (!IP_Validierung.TryValidateIPv4(fullIpAddress, out errorMessage, out addressClass))
             return;
- 
+
         subnetResult = Subnet_Calculator.Calculate(fullIpAddress, cidrInput);
         binaryIp = Binaerdarstellung.ToBinary(fullIpAddress);
         binaryMask = Binaerdarstellung.ToBinary(subnetResult.SubnetMask);
+        standort = await IP_Geolocation.LookupAsync(fullIpAddress);
         isCalculated = true;
     }
+
+
 }
