@@ -510,8 +510,7 @@
             padding-bottom: 2px;
         }
     }
-.eigene-ip-bereich {
-
+    .eigene-ip-bereich {
     margin-bottom: 15px;
 
     text-align: center;
@@ -545,10 +544,10 @@
 .ip-btn:hover {
 
     background-color: #fff9c4;
-
+    
     transform: translateY(-2px);
-
+    
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 
 }
- 
+
