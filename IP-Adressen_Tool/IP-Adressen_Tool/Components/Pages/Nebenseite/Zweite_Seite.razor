@@ -1,10 +1,61 @@
 ﻿@page "/Zweite-Seite"
+@using IP_Adressen_Tool.Components.Pages.Nebenseite
 @rendermode InteractiveServer
-
-<h3>Zweite_Seite</h3>
-<a class="seiten-pfeil" href="/IP-Tool">← Zurück zum IP-Rechner</a>
-
+ 
+<div class="seite">
+<div class="haupt-bereich">
+<!-- Zurück-Link links vom Converter -->
+<a class="seiten-pfeil" href="/IP-Tool">
+<img src="image/pfeil-icon-svg-download-png-97525.png" alt="Pfeil" class="pfeil-bild-zurueck" />
+<span>Zurück zum IP-Rechner</span>
+</a>
+ 
+        <div class="rechner">
+<h2>IPv6 Converter</h2>
+ 
+            <div class="eingabe">
+<label>IPv6-Adresse eingeben:</label>
+<input type="text" class="ipv6-input" placeholder="z. B. 2001:db8::8a2e:370:7334" @bind="ipv6Input" @bind:event="oninput" />
+ 
+                <button type="button" @onclick="Umwandeln">Umwandeln</button>
+ 
+                @if (!string.IsNullOrEmpty(result.ErrorMessage))
+                {
+<div class="fehler">@result.ErrorMessage</div>
+                }
+</div>
+ 
+            @if (result.IsValid)
+            {
+<div class="ergebnis">
+<h3>Konvertierungsergebnisse</h3>
+<table>
+<tr>
+<td>Komprimiert (Standard)</td>
+<td>@result.CompressedIPv6</td>
+</tr>
+<tr>
+<td>Vollständig (Expandiert)</td>
+<td>@result.FullIPv6</td>
+</tr>
+<tr>
+<td>Binärdarstellung (128 Bit)</td>
+<td class="mono">@result.BinaryIPv6</td>
+</tr>
+</table>
+</div>
+            }
+</div> <!-- Ende rechner -->
+ 
+    </div>
+</div>
 
 @code {
-
+    private string ipv6Input = "2001:db8::8a2e:370:7334";
+    private IPv6Result result = new();
+ 
+    private void Umwandeln()
+    {
+        result = IPv6_Converter.Convert(ipv6Input);
+    }
 }
