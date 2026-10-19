@@ -62,26 +62,31 @@
     private string binaryMask = "";
     private bool isCalculated;
     private SubnetResult? subnetResult;
- 
     private string fullIpAddress => $"{octet1}.{octet2}.{octet3}.{octet4}";
-  private void Berechnen()
+    private GeolocationResult? standort;
+
+    private async Task Berechnen()
     {
         errorMessage = "";
         isCalculated = false;
         subnetResult = null;
- 
+        standort = null;
+
         if (octet1 < 0 || octet1 > 255 || octet2 < 0 || octet2 > 255 || octet3 < 0 || octet3 > 255 || octet4 < 0 || octet4 > 255)
         {
             errorMessage = "Jedes Oktett muss zwischen 0 und 255 liegen.";
             return;
         }
- 
+
         if (!IP_Validierung.TryValidateIPv4(fullIpAddress, out errorMessage, out addressClass))
             return;
- 
+
         subnetResult = Subnet_Calculator.Calculate(fullIpAddress, cidrInput);
         binaryIp = Binaerdarstellung.ToBinary(fullIpAddress);
         binaryMask = Binaerdarstellung.ToBinary(subnetResult.SubnetMask);
+        standort = await IP_Geolocation.LookupAsync(fullIpAddress);
         isCalculated = true;
     }
+
+
 }
