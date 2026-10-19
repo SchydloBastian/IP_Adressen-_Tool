@@ -1,7 +1,6 @@
 ﻿@page "/IP-Tool"
 @rendermode InteractiveServer
- 
-    <div class="seite">
+<div class="haupt-bereich">
     <div class="rechner">
         <h2>IP-Subnetz-Rechner</h2>
 
@@ -23,41 +22,45 @@
             </div>
             <input class="cidr-regler" type="range" min="0" max="32" @bind="cidrInput" @bind:event="oninput" />
 
-
+            <button type="button" @onclick="Berechnen">Berechnen</button>
 
             @if (!string.IsNullOrEmpty(errorMessage))
             {
                 <div class="fehler">@errorMessage</div>
             }
         </div>
-        <button type="button" @onclick="Berechnen">Berechnen</button>
-        <a class="seiten-pfeil" href="/Zweite-Seite">→ IPv6 Converter</a>
+
+        @if (isCalculated && subnetResult is not null)
+        {
+            <div class="ergebnis">
+                <h3>Berechnungsergebnisse</h3>
+                <table>
+                    <tr><td>Eingegebene IP-Adresse</td><td>@fullIpAddress / @cidrInput</td></tr>
+                    <tr><td>Binärdarstellung (IP)</td><td class="mono">@binaryIp</td></tr>
+                    <tr><td>Binärdarstellung (Subnetzmaske)</td><td class="mono">@binaryMask</td></tr>
+                    <tr><td>Adressklasse</td><td>@addressClass</td></tr>
+                    <tr><td>Subnetzmaske (CIDR / Dezimal)</td><td>@subnetResult.SubnetMask (/ @cidrInput)</td></tr>
+                    <tr><td>Netzwerkadresse</td><td>@subnetResult.NetworkAddress</td></tr>
+                    <tr><td>Broadcast-Adresse</td><td>@subnetResult.BroadcastAddress</td></tr>
+                    <tr><td>Nutzbarer Host-Bereich</td><td>@subnetResult.FirstHost – @subnetResult.LastHost</td></tr>
+                    <tr><td>Maximal nutzbare Hosts</td><td>@subnetResult.UsableHosts</td></tr>
+                    <tr><td>Standort</td><td>@standort?.Text</td></tr>
+                    <tr><td>Land</td><td>@standort?.Land</td></tr>
+                    <tr><td>Region</td><td>@standort?.Region</td></tr>
+                    <tr><td>Stadt</td><td>@standort?.Stadt</td></tr>
+                    <tr><td>Anbieter</td><td>@standort?.Anbieter</td></tr>
+                    <tr><td>Koordinaten</td><td>@standort?.Koordinaten</td></tr>
+                </table>
+            </div>
+        }
     </div>
- 
-    @if (isCalculated && subnetResult is not null)
-    {
-<div class="ergebnis">
-<h3>Berechnungsergebnisse</h3>
-<table>
-<tr><td>Eingegebene IP-Adresse</td><td>@fullIpAddress / @cidrInput</td></tr>
-<tr><td>Binärdarstellung (IP)</td><td class="mono">@binaryIp</td></tr>
-<tr><td>Binärdarstellung (Subnetzmaske)</td><td class="mono">@binaryMask</td></tr>
-<tr><td>Adressklasse</td><td>@addressClass</td></tr>
-<tr><td>Subnetzmaske (CIDR / Dezimal)</td><td>@subnetResult.SubnetMask (/ @cidrInput)</td></tr>
-<tr><td>Netzwerkadresse</td><td>@subnetResult.NetworkAddress</td></tr>
-<tr><td>Broadcast-Adresse</td><td>@subnetResult.BroadcastAddress</td></tr>
-<tr><td>Nutzbarer Host-Bereich</td><td>@subnetResult.FirstHost – @subnetResult.LastHost</td></tr>
-<tr><td>Maximal nutzbare Hosts</td><td>@subnetResult.UsableHosts</td></tr>
-<tr><td>Standort</td><td>@standort?.Text</td></tr>
-<tr><td>Land</td><td>@standort?.Land</td></tr>
-<tr><td>Region</td><td>@standort?.Region</td></tr>
-<tr><td>Stadt</td><td>@standort?.Stadt</td></tr>
-<tr><td>Anbieter</td><td>@standort?.Anbieter</td></tr>
-<tr><td>Koordinaten</td><td>@standort?.Koordinaten</td></tr>
-</table>
+
+    <a class="seiten-pfeil" href="/Zweite-Seite">
+        <img src="image/pfeil-icon-svg-download-png-97525.png" alt="Pfeil" class="pfeil-bild" />       
+        <span>IPv6 Converter</span>
+    </a>
 </div>
-    }
-</div>
+
  
 @code {
     private int octet1 = 192;
