@@ -99,4 +99,92 @@
                 </div>
             }
 
-           
+            <h3 class="zusatz-titel">VLSM: Netz nach Hostzahlen aufteilen</h3>
+            <div class="eingabe">
+                <label>Gesamtnetz (IP/CIDR):</label>
+                <input type="text" class="ipv6-input" placeholder="192.168.0.0/24" @bind="vlsmNetz" @bind:event="oninput" />
+                <label>Benötigte Hosts (eine Zahl pro Zeile):</label>
+                <textarea class="netz-text" rows="5" placeholder="50" @bind="vlsmHosts" @bind:event="oninput"></textarea>
+                <button type="button" @onclick="VlsmBerechnen">Aufteilen</button>
+
+                @if (vlsmResult is not null && !vlsmResult.IsValid)
+                {
+                    <div class="fehler">@vlsmResult.ErrorMessage</div>
+                }
+            </div>
+
+            @if (vlsmResult is not null && vlsmResult.IsValid)
+            {
+                <div class="ergebnis">
+                    <h3>Ergebnis für @vlsmResult.Gesamtnetz</h3>
+                    <div class="tabelle-rahmen">
+                        <table class="stapel-tabelle">
+                            <thead>
+                                <tr>
+                                    <th>Hosts</th>
+                                    <th>Netz</th>
+                                    <th>Erster Host</th>
+                                    <th>Letzter Host</th>
+                                    <th>Broadcast</th>
+                                    <th>Nutzbar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var zeile in vlsmResult.Zeilen)
+                                {
+                                    if (zeile.HatFehler)
+                                    {
+                                        <tr class="zeile-fehler">
+                                            <td>@zeile.Hosts</td>
+                                            <td colspan="5">@zeile.Fehler</td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>@zeile.Hosts</td>
+                                            <td class="mono">@zeile.CidrNotation</td>
+                                            <td class="mono">@zeile.Erster</td>
+                                            <td class="mono">@zeile.Letzter</td>
+                                            <td class="mono">@zeile.Broadcast</td>
+                                            <td>@zeile.Nutzbar</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="zusatz-text">
+                        Vergeben: @vlsmResult.VergebeneAdressen.ToString("N0", CultureInfo.GetCultureInfo("de-DE")) von @vlsmResult.GesamtAdressen.ToString("N0", CultureInfo.GetCultureInfo("de-DE")) Adressen,
+                        frei: @vlsmResult.FreieAdressen.ToString("N0", CultureInfo.GetCultureInfo("de-DE")).
+                        Jedes Netz braucht Hosts + 2 Adressen, mindestens ein /30.
+                    </div>
+
+                    <div class="export-zeile">
+                        <button type="button" class="ip-btn" @onclick="VlsmExportTxt">TXT</button>
+                        <button type="button" class="ip-btn" @onclick="VlsmExportCsv">CSV</button>
+                        <button type="button" class="ip-btn" @onclick="VlsmExportJson">JSON</button>
+                        <button type="button" class="ip-btn" onclick="window.print()">Drucken</button>
+                    </div>
+                </div>
+            }
+
+            <h3 class="zusatz-titel">DNS-Abfrage</h3>
+            <div class="eingabe">
+                <label>IP-Adresse oder Hostname:</label>
+                <input type="text" class="ipv6-input" placeholder="example.com oder 8.8.8.8" @bind="dnsEingabe" @bind:event="oninput" />
+                <button type="button" @onclick="DnsAbfragen" disabled="@dnsLaeuft">Abfragen</button>
+            </div>
+
+            @if (dnsErgebnis is not null)
+            {
+                <div class="ergebnis">
+                    <h3>DNS-Ergebnis</h3>
+                    <div class="zusatz-text mono">@dnsErgebnis.Text</div>
+                </div>
+            }
+        </div>
+
+    </div>
+</div>
+
