@@ -50,6 +50,45 @@ public static class EUI64_Rechner
             return result;
         }
 
-        
+        string praefixText = praefix.Trim();
+        string adressTeil = praefixText;
+        int laenge = 64;
+
+        int strich = praefixText.IndexOf('/');
+        if (strich >= 0)
+        {
+            adressTeil = praefixText.Substring(0, strich).Trim();
+            if (!int.TryParse(praefixText.Substring(strich + 1).Trim(), out laenge))
+            {
+                result.ErrorMessage = "Ungültige Präfixlänge.";
+                return result;
+            }
+        }
+
+        if (laenge != 64)
+        {
+            result.ErrorMessage = "Für EUI-64 muss das Präfix /64 lang sein.";
+            return result;
+        }
+
+        if (!IPAddress.TryParse(adressTeil, out IPAddress? praefixAdresse)
+            || praefixAdresse.AddressFamily != AddressFamily.InterNetworkV6)
+        {
+            result.ErrorMessage = "Ungültiges IPv6-Präfix.";
+            return result;
+        }
+
+        byte[] adresse = new byte[16];
+        Array.Copy(praefixAdresse.GetAddressBytes(), adresse, 8);
+        Array.Copy(kennung, 0, adresse, 8, 8);
+
+        result.Mac = macSchreibweise;
+        result.InterfaceId = interfaceId;
+        result.AdresseKomprimiert = new IPAddress(adresse).ToString();
+        result.AdresseExpandiert = string.Join(":",
+            Enumerable.Range(0, 8).Select(i => $"{adresse[i * 2]:x2}{adresse[i * 2 + 1]:x2}"));
+        result.HatAdresse = true;
+        result.IsValid = true;
+        return result;
     }
 }
