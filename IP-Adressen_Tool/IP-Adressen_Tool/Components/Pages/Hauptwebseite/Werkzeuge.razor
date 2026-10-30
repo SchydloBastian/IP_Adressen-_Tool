@@ -188,3 +188,95 @@
     </div>
 </div>
 
+@code {
+    private string von = "192.168.0.0";
+    private string bis = "192.168.1.255";
+    private BereichZuCidrResult? bereichResult;
+    private List<ExportVlsm> exportZeilen = new();
+
+    private string netzText = "10.0.0.0/24\n10.0.0.128/25\n192.168.0.0/16";
+    private UeberlappungResult? ueberlappung;
+
+    private string vlsmNetz = "192.168.0.0/24";
+    private string vlsmHosts = "50\n20\n10";
+    private VlsmResult? vlsmResult;
+
+    private string dnsEingabe = "";
+    private DnsLookupResult? dnsErgebnis;
+    private bool dnsLaeuft;
+
+    private void BereichUmwandeln()
+    {
+        bereichResult = CIDR_Bereichs_Rechner_IPv4.BereichZuCidr(von, bis);
+        exportZeilen = new List<ExportVlsm>();
+
+        if (!bereichResult.IsValid) return;
+
+        foreach (var netz in bereichResult.Netze)
+        {
+            SubnetResult s = Subnet_Calculator.Calculate(netz.Netz, netz.Cidr);
+            exportZeilen.Add(new ExportVlsm
+            {
+                Netz = netz.Netz,
+                CIDR = $"/{netz.Cidr}",
+                Erster = s.FirstHost,
+                Letzter = s.LastHost,
+                Broadcast = s.BroadcastAddress,
+                Nutzbar = s.UsableHosts.ToString(CultureInfo.InvariantCulture)
+            });
+        }
+    }
+
+    private void UeberlappungenSuchen()
+    {
+        ueberlappung = CIDR_Bereichs_Rechner_IPv4.FindeUeberlappungen(netzText);
+    }
+
+    private void VlsmBerechnen()
+    {
+        vlsmResult = VLSM_Rechner.Berechne(vlsmNetz, vlsmHosts);
+    }
+
+    private async Task DnsAbfragen()
+    {
+        dnsLaeuft = true;
+        dnsErgebnis = new DnsLookupResult { Text = "Abfrage läuft …" };
+
+        dnsErgebnis = await DNS_Lookup.AbfragenAsync(dnsEingabe);
+
+        dnsLaeuft = false;
+    }
+
+    private async Task VlsmExportTxt()
+    {
+        if (vlsmResult is null) return;
+        await Ergebnis_Export.HerunterladenAsync(JS, "vlsm.txt", Ergebnis_Export.VlsmTxt(vlsmResult.ExportListe()), Ergebnis_Export.MimeTxt);
+    }
+
+    private async Task VlsmExportCsv()
+    {
+        if (vlsmResult is null) return;
+        await Ergebnis_Export.HerunterladenAsync(JS, "vlsm.csv", Ergebnis_Export.VlsmCsv(vlsmResult.ExportListe()), Ergebnis_Export.MimeCsv);
+    }
+
+    private async Task VlsmExportJson()
+    {
+        if (vlsmResult is null) return;
+        await Ergebnis_Export.HerunterladenAsync(JS, "vlsm.json", Ergebnis_Export.VlsmJson(vlsmResult.ExportListe()), Ergebnis_Export.MimeJson);
+    }
+
+    private async Task ExportTxt()
+    {
+        await Ergebnis_Export.HerunterladenAsync(JS, "bereich-cidr.txt", Ergebnis_Export.VlsmTxt(exportZeilen), Ergebnis_Export.MimeTxt);
+    }
+
+    private async Task ExportCsv()
+    {
+        await Ergebnis_Export.HerunterladenAsync(JS, "bereich-cidr.csv", Ergebnis_Export.VlsmCsv(exportZeilen), Ergebnis_Export.MimeCsv);
+    }
+
+    private async Task ExportJson()
+    {
+        await Ergebnis_Export.HerunterladenAsync(JS, "bereich-cidr.json", Ergebnis_Export.VlsmJson(exportZeilen), Ergebnis_Export.MimeJson);
+    }
+}
