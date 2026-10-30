@@ -1,5 +1,102 @@
-﻿<h3>Werkzeuge</h3>
+﻿@page "/Werkzeuge"
+@rendermode InteractiveServer
+@using System.Globalization
+@inject IJSRuntime JS
 
-@code {
+<div class="seite">
+    <div class="haupt-bereich">
 
-}
+        <a class="seiten-pfeil" href="/IP-Tool">
+            <img src="image/pfeil-icon-svg-download-png-97525.png" alt="Pfeil" class="pfeil-bild-zurueck" />
+            <span>Zurück zum IP-Rechner</span>
+        </a>
+
+        <div class="rechner">
+            <h2>Werkzeuge</h2>
+
+            <h3 class="zusatz-titel">IP-Bereich in CIDR-Netze umwandeln</h3>
+            <div class="eingabe">
+                <label>Von (IPv4):</label>
+                <input type="text" class="ipv6-input" placeholder="192.168.0.0" @bind="von" @bind:event="oninput" />
+                <label>Bis (IPv4):</label>
+                <input type="text" class="ipv6-input" placeholder="192.168.1.255" @bind="bis" @bind:event="oninput" />
+                <button type="button" @onclick="BereichUmwandeln">In CIDR umwandeln</button>
+
+                @if (bereichResult is not null && !bereichResult.IsValid)
+                {
+                    <div class="fehler">@bereichResult.ErrorMessage</div>
+                }
+            </div>
+
+            @if (bereichResult is not null && bereichResult.IsValid)
+            {
+                <div class="ergebnis">
+                    <h3>Ergebnis: @bereichResult.Netze.Count Netz(e)</h3>
+                    <table>
+                        @for (int i = 0; i < bereichResult.Netze.Count; i++)
+                        {
+                            var netz = bereichResult.Netze[i];
+                            <tr>
+                                <td>Netz @(i + 1)</td>
+                                <td><span class="mono">@netz.CidrNotation</span> (@netz.Anzahl.ToString("N0", CultureInfo.GetCultureInfo("de-DE")) Adressen)</td>
+                            </tr>
+                        }
+                    </table>
+
+                    <div class="export-zeile">
+                        <button type="button" class="ip-btn" @onclick="ExportTxt">TXT</button>
+                        <button type="button" class="ip-btn" @onclick="ExportCsv">CSV</button>
+                        <button type="button" class="ip-btn" @onclick="ExportJson">JSON</button>
+                        <button type="button" class="ip-btn" onclick="window.print()">Drucken</button>
+                    </div>
+                </div>
+            }
+
+            <h3 class="zusatz-titel">Überlappende Netze finden</h3>
+            <div class="eingabe">
+                <label>Netze (eines pro Zeile, IP/CIDR):</label>
+                <textarea class="netz-text" rows="6" placeholder="10.0.0.0/24" @bind="netzText" @bind:event="oninput"></textarea>
+                <button type="button" @onclick="UeberlappungenSuchen">Überlappungen suchen</button>
+
+                @if (ueberlappung is not null && !ueberlappung.IsValid)
+                {
+                    <div class="fehler">@ueberlappung.ErrorMessage</div>
+                }
+                @if (ueberlappung is not null)
+                {
+                    foreach (var meldung in ueberlappung.Zeilenfehler)
+                    {
+                        <div class="fehler">@meldung</div>
+                    }
+                }
+            </div>
+
+            @if (ueberlappung is not null && ueberlappung.IsValid)
+            {
+                <div class="ergebnis">
+                    <h3>Ergebnis</h3>
+                    @if (ueberlappung.KeineUeberlappung)
+                    {
+                        <div class="zusatz-text">Keine Überlappung gefunden. Es wurden @ueberlappung.AnzahlNetze Netze geprüft.</div>
+                    }
+                    else
+                    {
+                        <table>
+                            @foreach (var paar in ueberlappung.Paare)
+                            {
+                                <tr>
+                                    <td>@paar.NetzA und @paar.NetzB</td>
+                                    <td>Schnitt: <span class="mono">@paar.Schnitt</span> (@paar.SchnittBereich, @paar.SchnittAdressen.ToString("N0", CultureInfo.GetCultureInfo("de-DE")) Adressen)</td>
+                                </tr>
+                            }
+                        </table>
+                    }
+
+                    @if (!string.IsNullOrEmpty(ueberlappung.Hinweis))
+                    {
+                        <div class="zusatz-text">@ueberlappung.Hinweis</div>
+                    }
+                </div>
+            }
+
+           
