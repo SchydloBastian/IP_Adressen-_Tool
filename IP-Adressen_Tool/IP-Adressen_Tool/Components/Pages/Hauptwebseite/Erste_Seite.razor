@@ -9,13 +9,13 @@
         <div class="eingabe">
             <label>IPv4-Adresse (4 Oktette):</label>
             <div class="oktette">
-                <input class="oktett1" type="number" min="0" max="255" @bind="octet1" @bind:event="oninput" />
+                <input class="oktett1" type="number" min="0" max="255" @bind="octet1" @bind:event="oninput" onfocus="this.select()" />
                 <span>.</span>
-                <input class="oktett2" type="number" min="0" max="255" @bind="octet2" @bind:event="oninput" />
+                <input class="oktett2" type="number" min="0" max="255" @bind="octet2" @bind:event="oninput" onfocus="this.select()" />
                 <span>.</span>
-                <input class="oktett3" type="number" min="0" max="255" @bind="octet3" @bind:event="oninput" />
+                <input class="oktett3" type="number" min="0" max="255" @bind="octet3" @bind:event="oninput" onfocus="this.select()" />
                 <span>.</span>
-                <input class="oktett4" type="number" min="0" max="255" @bind="octet4" @bind:event="oninput" />
+                <input class="oktett4" type="number" min="0" max="255" @bind="octet4" @bind:event="oninput" onfocus="this.select()" />
             </div>
 
             <div class="cidr-zeile">
@@ -34,15 +34,15 @@
         <div class="eigene-ip-bereich">
             <button type="button" class="ip-btn" @onclick="EigeneIpInOktetteEinfuegen">
                 @if (string.IsNullOrEmpty(erkannteIp))
-             {
-            <span>Eigene IP ermitteln & einfügen</span>
-             }
-            else
-            {
-            <span>Eigene IP (@erkannteIp) einfügen</span>
-            }
+                {
+                    <span>Eigene IP ermitteln & einfügen</span>
+                }
+                else
+                {
+                    <span>Eigene IP (@erkannteIp) einfügen</span>
+                }
             </button>
-            </div>
+        </div>
 
         @if (isCalculated && subnetResult is not null)
         {
@@ -58,6 +58,10 @@
                     <tr><td>Broadcast-Adresse</td><td>@subnetResult.BroadcastAddress</td></tr>
                     <tr><td>Nutzbarer Host-Bereich</td><td>@subnetResult.FirstHost – @subnetResult.LastHost</td></tr>
                     <tr><td>Maximal nutzbare Hosts</td><td>@subnetResult.UsableHosts</td></tr>
+                    <tr><td>CIDR-Notation</td><td class="mono">@bereich?.CidrNotation</td></tr>
+                    <tr><td>CIDR-Adressbereich</td><td class="mono">@bereich?.Range</td></tr>
+                    <tr><td>Wildcard-Maske</td><td class="mono">@bereich?.WildcardMask</td></tr>
+                    <tr><td>Gesamtanzahl Adressen</td><td>@bereich?.TotalAddressesText</td></tr>
                     <tr><td>Standort</td><td>@standort?.Text</td></tr>
                     <tr><td>Land</td><td>@standort?.Land</td></tr>
                     <tr><td>Region</td><td>@standort?.Region</td></tr>
@@ -89,6 +93,7 @@
     private string binaryMask = "";
     private bool isCalculated;
     private SubnetResult? subnetResult;
+    private CidrBereichIPv4Result? bereich;
     private string fullIpAddress => $"{octet1}.{octet2}.{octet3}.{octet4}";
     private GeolocationResult? standort;
 
@@ -104,6 +109,7 @@
         errorMessage = "";
         isCalculated = false;
         subnetResult = null;
+        bereich = null;
         standort = null;
 
         if (octet1 < 0 || octet1 > 255 || octet2 < 0 || octet2 > 255 || octet3 < 0 || octet3 > 255 || octet4 < 0 || octet4 > 255)
@@ -118,6 +124,7 @@
         }
 
         subnetResult = Subnet_Calculator.Calculate(fullIpAddress, cidrInput);
+        bereich = CIDR_Bereichs_Rechner_IPv4.Calculate(fullIpAddress, cidrInput);
         binaryIp = Binaerdarstellung.ToBinary(fullIpAddress);
         binaryMask = Binaerdarstellung.ToBinary(subnetResult.SubnetMask);
         standort = await IP_Geolocation.LookupAsync(fullIpAddress);
