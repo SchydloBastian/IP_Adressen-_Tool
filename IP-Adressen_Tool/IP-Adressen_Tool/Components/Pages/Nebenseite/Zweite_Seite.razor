@@ -1,76 +1,93 @@
 ﻿@page "/Zweite-Seite"
 @using IP_Adressen_Tool.Components.Pages.Nebenseite
 @rendermode InteractiveServer
- 
+
 <div class="seite">
-<div class="haupt-bereich">
- 
-<a class="seiten-pfeil" href="/IP-Tool">
-<img src="image/pfeil-icon-svg-download-png-97525.png" alt="Pfeil" class="pfeil-bild-zurueck" />
-<span>Zurück zum IP-Rechner</span>
-</a>
- 
+    <div class="haupt-bereich">
+
+        <a class="seiten-pfeil" href="/IP-Tool">
+            <img src="image/pfeil-icon-svg-download-png-97525.png" alt="Pfeil" class="pfeil-bild-zurueck" />
+            <span>Zurück zum IP-Rechner</span>
+        </a>
+
         <div class="rechner">
-<h2>IPv6 CIDR-Subnetz-Rechner</h2>
- 
+            <h2>IPv6 CIDR-Subnetz-Rechner</h2>
+
             <div class="eingabe">
-<label>IPv6-Adresse:</label>
-<input type="text" class="ipv6-input" placeholder="2001:db8::1" @bind="ipInput" @bind:event="oninput" />
- 
+                <label>IPv6-Adresse:</label>
+                <input type="text" class="ipv6-input" placeholder="2001:db8::1" @bind="ipInput" @bind:event="oninput" />
+
                 <div class="cidr-zeile">
-<label>CIDR-Präfix: /@prefixLength</label>
-</div>
-<input class="cidr-regler" type="range" min="0" max="128" @bind="prefixLength" @bind:event="oninput" />
- 
+                    <label>CIDR-Präfix: /@prefixLength</label>
+                </div>
+                <input class="cidr-regler" type="range" min="0" max="128" @bind="prefixLength" @bind:event="oninput" />
+
                 <button type="button" @onclick="Berechnen">Berechnen</button>
- 
+
                 @if (!string.IsNullOrEmpty(result.ErrorMessage))
                 {
-<div class="fehler">@result.ErrorMessage</div>
+                    <div class="fehler">@result.ErrorMessage</div>
                 }
-</div>
- 
+            </div>
+
             @if (result.IsValid)
             {
-<div class="ergebnis">
-<h3>Subnetz-Berechnungsergebnisse</h3>
-<table>
-<tr>
-<td>Eingegebene IP / Präfix</td>
-<td>@ipInput / /@prefixLength</td>
-</tr>
-<tr>
-<td>Netzwerkadresse</td>
-<td class="mono">@result.NetworkAddress</td>
-</tr>
-<tr>
-<td>Letzte Host-Adresse</td>
-<td class="mono">@result.LastHost</td>
-</tr>
-<tr>
-<td>Gesamtanzahl Hosts</td>
-<td>@result.TotalHosts</td>
-</tr>
-<tr>
-<td>IPv4 dotted-quad notation</td>
-<td class="mono">@shortVersion</td>
-</tr>
-</table>
-</div>
+                <div class="ergebnis">
+                    <h3>Subnetz-Berechnungsergebnisse</h3>
+                    <table>
+                        <tr>
+                            <td>Eingegebene IP / Präfix</td>
+                            <td>@ipInput / /@prefixLength</td>
+                        </tr>
+                        <tr>
+                            <td>Netzwerkadresse</td>
+                            <td class="mono">@result.NetworkAddress</td>
+                        </tr>
+                        <tr>
+                            <td>Letzte Host-Adresse</td>
+                            <td class="mono">@result.LastHost</td>
+                        </tr>
+                        <tr>
+                            <td>Gesamtanzahl Hosts</td>
+                            <td>@result.TotalHosts</td>
+                        </tr>
+                        <tr>
+                            <td>CIDR-Notation</td>
+                            <td class="mono">@bereich?.CidrNotation</td>
+                        </tr>
+                        <tr>
+                            <td>Erste Adresse (ausgeschrieben)</td>
+                            <td class="mono">@bereich?.FirstAddressExpanded</td>
+                        </tr>
+                        <tr>
+                            <td>Letzte Adresse (ausgeschrieben)</td>
+                            <td class="mono">@bereich?.LastAddressExpanded</td>
+                        </tr>
+                        <tr>
+                            <td>Anzahl /64-Netze</td>
+                            <td>@bereich?.Networks64Text</td>
+                        </tr>
+                        <tr>
+                            <td>IPv4 dotted-quad notation</td>
+                            <td class="mono">@shortVersion</td>
+                        </tr>
+                    </table>
+                </div>
             }
-</div>
- 
+        </div>
+
     </div>
 </div>
- 
+
 @code {
     [SupplyParameterFromQuery]
     public string? Ip { get; set; }
 
     private string ipInput = "2001:db8::1";
-    private string shortVersion = ""; 
+    private string shortVersion = "";
     private int prefixLength = 64;
     private IPv6CIDRResult result = new();
+    private IPv6BereichResult? bereich;
 
     protected override void OnInitialized()
     {
@@ -79,8 +96,8 @@
             var convResult = IPv4_zu_IPv6_Converter.Convert(Ip);
             if (convResult.IsValid)
             {
-                ipInput = convResult.FullIPv6;     
-                shortVersion = convResult.MappedIPv6; 
+                ipInput = convResult.FullIPv6;
+                shortVersion = convResult.MappedIPv6;
             }
         }
     }
@@ -88,5 +105,6 @@
     private void Berechnen()
     {
         result = IPv6_CIDR_Rechner.Calculate(ipInput, prefixLength);
+        bereich = CIDR_Bereichs_Rechner_IPv6.Calculate(ipInput, prefixLength);
     }
 }

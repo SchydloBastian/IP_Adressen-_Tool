@@ -1,105 +1,291 @@
-﻿.seite {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 90vh;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-}
-
+﻿/* Farben als Variablen (bewusst NICHT auf :root, weil Blazor bei Seiten-CSS ein Attribut anhängt) */
 .haupt-bereich {
+    --karte: #ffffff;
+    --flaeche: #f5f8fc;
+    --linie: #dfe6f0;
+    --text: #1b2533;
+    --leise: #607086;
+    --akzent: #2563eb;
+    --akzent-dunkel: #1d4ed8;
+    --akzent-hell: #e6efff;
+    --fehler: #b42318;
+    --fehler-hell: #fef0ee;
+    --mono: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, monospace;
+    position: relative;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 25px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+    width: 100%;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 28px 16px 56px;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: var(--text);
 }
 
+    /* ---------- Hintergrund: ruhiges Punktraster mit zwei langsam wandernden Lichtflecken ---------- */
+    .haupt-bereich::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background-color: #eef3fa;
+        background-image: radial-gradient(620px 420px at 12% 8%, rgba(37, 99, 235, 0.16), transparent 70%), radial-gradient(540px 400px at 92% 88%, rgba(14, 165, 233, 0.14), transparent 70%), radial-gradient(circle, rgba(30, 64, 120, 0.16) 1px, transparent 1.6px), linear-gradient(180deg, #f4f7fc 0%, #e8eef8 100%);
+        background-size: auto, auto, 28px 28px, auto;
+        background-repeat: no-repeat, no-repeat, repeat, no-repeat;
+        background-position: 0 0, 100% 100%, 0 0, 0 0;
+        animation: hintergrund 28s ease-in-out infinite alternate;
+    }
+
+/* ---------- Karte ---------- */
 .rechner {
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid var(--linie);
     border-radius: 20px;
     padding: 30px;
-    width: 650px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05), 0 18px 40px rgba(30, 64, 120, 0.10);
+    backdrop-filter: blur(6px);
+    animation: karte-rein 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
     .rechner h2 {
-        text-align: center;
-        color: #1a3c34;
-        margin-bottom: 25px;
-        font-size: 24px;
+        position: relative;
+        margin: 0 0 22px;
+        padding-bottom: 14px;
+        text-align: left;
+        font-size: 26px;
+        font-weight: 750;
+        letter-spacing: -0.02em;
+        color: var(--text);
     }
 
+        .rechner h2::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 3px;
+            width: 54px;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--akzent), #38bdf8);
+            transform-origin: left;
+            animation: balken 0.7s 0.25s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        }
+
+    .rechner h3 {
+        margin: 0 0 10px;
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+    }
+
+/* ---------- Eingabe ---------- */
 .eingabe {
-    background-color: #e0f7fa;
-    border-radius: 15px;
-    padding: 20px;
-    margin-bottom: 20px;
+    background: var(--flaeche);
+    border: 1px solid var(--linie);
+    border-radius: 14px;
+    padding: 22px;
+    animation: hoch 0.5s 0.12s ease both;
 }
 
     .eingabe label {
         display: block;
-        font-weight: bold;
-        font-size: 13px;
-        color: #004d40;
         margin-bottom: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.07em;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        color: var(--leise);
     }
+
+.oktette {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+    .oktette span {
+        font-size: 24px;
+        font-weight: 800;
+        color: #9db0cc;
+    }
+
+    .oktette input {
+        flex: 1;
+        min-width: 0;
+        height: 52px;
+        padding: 0 8px;
+        border: 1.5px solid var(--linie);
+        border-radius: 12px;
+        background: #ffffff;
+        text-align: center;
+        font-family: var(--mono);
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--text);
+        transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+        animation: pop 0.45s cubic-bezier(0.2, 1.2, 0.3, 1) both;
+    }
+
+        .oktette input.oktett1 {
+            animation-delay: 0.20s;
+        }
+
+        .oktette input.oktett2 {
+            animation-delay: 0.28s;
+        }
+
+        .oktette input.oktett3 {
+            animation-delay: 0.36s;
+        }
+
+        .oktette input.oktett4 {
+            animation-delay: 0.44s;
+        }
+
+        .oktette input:hover {
+            border-color: #b9c9e3;
+            transform: translateY(-2px);
+        }
+
+        .oktette input::-webkit-outer-spin-button,
+        .oktette input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
 
 .ipv6-input {
     width: 100%;
-    padding: 10px 14px;
-    font-size: 15px;
-    background-color: #fffde7;
-    border: 1px solid #dcdcdc;
-    border-radius: 10px;
-    outline: none;
+    height: 52px;
+    padding: 0 16px;
+    margin-bottom: 20px;
     box-sizing: border-box;
-    margin-bottom: 15px;
+    border: 1.5px solid var(--linie);
+    border-radius: 12px;
+    background: #ffffff;
+    font-family: var(--mono);
+    font-size: 17px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
 }
 
+    .ipv6-input:hover {
+        border-color: #b9c9e3;
+    }
+
+    .oktette input:focus,
     .ipv6-input:focus {
-        border-color: #00796b;
-        box-shadow: 0 0 5px rgba(0, 121, 107, 0.2);
+        outline: none;
+        border-color: var(--akzent);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.16);
+        transform: translateY(-2px);
     }
 
-button {
-    background-color: #1a3c34;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: bold;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background-color 0.2s;
+.cidr-zeile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
 }
 
-    button:hover {
-        background-color: #2e7d32;
+    .cidr-zeile label {
+        margin-bottom: 0;
     }
 
-.fehler {
-    color: #d32f2f;
+.cidr-badge {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 999px;
+    background: var(--akzent-hell);
+    color: var(--akzent-dunkel);
+    font-family: var(--mono);
     font-size: 13px;
-    margin-top: 10px;
-    font-weight: 500;
+    font-weight: 700;
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.35);
+    animation: puls 3.2s ease-out infinite;
 }
 
-.ergebnis {
-    margin-top: 25px;
-    background-color: #e0f7fa;
-    border-radius: 15px;
-    padding: 20px;
+.cidr-regler {
+    width: 100%;
+    height: 30px;
+    margin: 4px 0 20px;
+    accent-color: var(--akzent);
+    cursor: pointer;
 }
 
-    .ergebnis h3 {
-        margin-top: 0;
-        font-size: 16px;
-        color: #004d40;
-        margin-bottom: 15px;
+/* ---------- Haupt-Button mit Glanz-Effekt ---------- */
+.eingabe button {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 52px;
+    border: 0;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--akzent), var(--akzent-dunkel));
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.30);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+    .eingabe button::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.38), transparent 70%);
+        transform: translateX(-120%);
     }
+
+    .eingabe button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(37, 99, 235, 0.36);
+    }
+
+        .eingabe button:hover::after {
+            animation: glanz 0.8s ease;
+        }
+
+    .eingabe button:active {
+        transform: translateY(1px) scale(0.99);
+        box-shadow: 0 3px 8px rgba(37, 99, 235, 0.3);
+    }
+
+    .eingabe button:focus-visible {
+        outline: 3px solid rgba(37, 99, 235, 0.4);
+        outline-offset: 2px;
+    }
+
+/* ---------- Fehler ---------- */
+.fehler {
+    margin-top: 14px;
+    padding: 11px 14px;
+    border-left: 4px solid var(--fehler);
+    border-radius: 10px;
+    background: var(--fehler-hell);
+    color: var(--fehler);
+    font-size: 14px;
+    font-weight: 600;
+    animation: wackeln 0.4s ease;
+}
+
+/* ---------- Ergebnisse ---------- */
+.ergebnis {
+    margin-top: 22px;
+    padding: 22px 24px;
+    background: var(--karte);
+    border: 1px solid var(--linie);
+    border-left: 4px solid var(--akzent);
+    border-radius: 14px;
+    animation: hoch 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
 
     .ergebnis table {
         width: 100%;
@@ -107,61 +293,383 @@ button {
     }
 
     .ergebnis tr {
-        border-bottom: 1px solid #b2dfdb;
+        animation: zeile 0.45s ease both;
+        transition: background 0.15s ease;
     }
 
-        .ergebnis tr:last-child {
-            border-bottom: none;
+        .ergebnis tr:hover {
+            background: #f3f7fe;
         }
 
     .ergebnis td {
-        padding: 10px 5px;
-        font-size: 14px;
-        color: #333333;
+        padding: 11px 8px;
+        border-bottom: 1px solid #edf1f7;
+        font-size: 15px;
+        vertical-align: top;
     }
 
         .ergebnis td:first-child {
+            width: 42%;
+            padding-right: 16px;
+            font-size: 14px;
             font-weight: 600;
-            color: #004d40;
-            width: 45%;
+            color: var(--leise);
         }
 
+    .ergebnis tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .ergebnis tr:nth-child(1) {
+        animation-delay: 0.085s;
+    }
+
+    .ergebnis tr:nth-child(2) {
+        animation-delay: 0.120s;
+    }
+
+    .ergebnis tr:nth-child(3) {
+        animation-delay: 0.155s;
+    }
+
+    .ergebnis tr:nth-child(4) {
+        animation-delay: 0.190s;
+    }
+
+    .ergebnis tr:nth-child(5) {
+        animation-delay: 0.225s;
+    }
+
+    .ergebnis tr:nth-child(6) {
+        animation-delay: 0.260s;
+    }
+
+    .ergebnis tr:nth-child(7) {
+        animation-delay: 0.295s;
+    }
+
+    .ergebnis tr:nth-child(8) {
+        animation-delay: 0.330s;
+    }
+
+    .ergebnis tr:nth-child(9) {
+        animation-delay: 0.365s;
+    }
+
+    .ergebnis tr:nth-child(10) {
+        animation-delay: 0.400s;
+    }
+
+    .ergebnis tr:nth-child(11) {
+        animation-delay: 0.435s;
+    }
+
+    .ergebnis tr:nth-child(12) {
+        animation-delay: 0.470s;
+    }
+
+    .ergebnis tr:nth-child(13) {
+        animation-delay: 0.505s;
+    }
+
+    .ergebnis tr:nth-child(14) {
+        animation-delay: 0.540s;
+    }
+
+    .ergebnis tr:nth-child(15) {
+        animation-delay: 0.575s;
+    }
+
+    .ergebnis tr:nth-child(16) {
+        animation-delay: 0.610s;
+    }
+
+    .ergebnis tr:nth-child(17) {
+        animation-delay: 0.645s;
+    }
+
+    .ergebnis tr:nth-child(18) {
+        animation-delay: 0.680s;
+    }
+
+    .ergebnis tr:nth-child(19) {
+        animation-delay: 0.715s;
+    }
+
+    .ergebnis tr:nth-child(20) {
+        animation-delay: 0.750s;
+    }
+
 .mono {
-    font-family: monospace;
-    font-size: 13px;
+    font-family: var(--mono);
+    font-size: 14px;
     word-break: break-all;
-    color: #00695c;
+    color: #123a7a;
 }
 
+/* ---------- Seiten-Link mit Pfeil-Bild (oben, immer sichtbar) ---------- */
 .seiten-pfeil {
+    order: -1;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    background-color: #fffde7;
-    color: #333333;
-    border: 1px solid #dcdcdc;
-    padding: 14px 22px;
-    border-radius: 30px;
+    gap: 12px;
+    padding: 6px 8px 6px 20px;
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--text);
+    border: 1px solid var(--linie);
+    border-radius: 999px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 8px 20px rgba(30, 64, 120, 0.08);
+    font-size: 14px;
+    font-weight: 700;
     text-decoration: none;
-    font-weight: 600;
-    font-size: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-    transition: all 0.3s ease;
     white-space: nowrap;
+    backdrop-filter: blur(6px);
+    animation: hoch 0.5s 0.05s ease both;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
     .seiten-pfeil:hover {
-        background-color: #fff9c4;
-        transform: translateX(-6px);
+        transform: translateY(-2px);
+        border-color: var(--akzent);
+        color: var(--akzent);
+        box-shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 12px 26px rgba(37, 99, 235, 0.20);
+    }
+
+    .seiten-pfeil:focus-visible {
+        outline: 3px solid rgba(37, 99, 235, 0.4);
+        outline-offset: 3px;
+    }
+
+    .seiten-pfeil .pfeil-bild,
+    .seiten-pfeil .pfeil-bild-zurueck {
+        width: 38px;
+        height: 38px;
+        padding: 10px;
+        box-sizing: border-box;
+        border-radius: 50%;
+        background: var(--akzent-hell);
+        transition: transform 0.25s ease, background 0.25s ease, filter 0.25s ease;
+    }
+
+    .seiten-pfeil .pfeil-bild {
+        animation: stups 3.6s ease-in-out 1.2s infinite;
     }
 
     .seiten-pfeil .pfeil-bild-zurueck {
-        width: 18px;
-        height: auto;
-        transform: scaleX(-1); 
-        transition: transform 0.3s ease;
+        transform: scaleX(-1);
+        animation: stups-zurueck 3.6s ease-in-out 1.2s infinite;
+    }
+
+    .seiten-pfeil:hover .pfeil-bild,
+    .seiten-pfeil:hover .pfeil-bild-zurueck {
+        background: var(--akzent);
+        filter: brightness(0) invert(1);
+        animation: none;
+    }
+
+    .seiten-pfeil:hover .pfeil-bild {
+        transform: translateX(3px);
     }
 
     .seiten-pfeil:hover .pfeil-bild-zurueck {
-        transform: scaleX(-1) translateX(5px);
+        transform: scaleX(-1) translateX(3px);
     }
+
+/* ---------- Animationen ---------- */
+@keyframes hintergrund {
+    from {
+        background-position: 0 0, 100% 100%, 0 0, 0 0;
+    }
+
+    to {
+        background-position: 70px 50px, calc(100% - 60px) calc(100% - 40px), 28px 28px, 0 0;
+    }
+}
+
+@keyframes karte-rein {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.985);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes hoch {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes zeile {
+    from {
+        opacity: 0;
+        transform: translateX(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes pop {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.92);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes balken {
+    from {
+        transform: scaleX(0);
+    }
+
+    to {
+        transform: scaleX(1);
+    }
+}
+
+@keyframes puls {
+    0% {
+        box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.35);
+    }
+
+    35%, 100% {
+        box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+    }
+}
+
+@keyframes glanz {
+    from {
+        transform: translateX(-120%);
+    }
+
+    to {
+        transform: translateX(120%);
+    }
+}
+
+@keyframes wackeln {
+    0%, 100% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-5px);
+    }
+
+    40% {
+        transform: translateX(5px);
+    }
+
+    60% {
+        transform: translateX(-3px);
+    }
+
+    80% {
+        transform: translateX(3px);
+    }
+}
+
+@keyframes stups {
+    0%, 70%, 100% {
+        transform: translateX(0);
+    }
+
+    80% {
+        transform: translateX(4px);
+    }
+
+    90% {
+        transform: translateX(1px);
+    }
+}
+
+@keyframes stups-zurueck {
+    0%, 70%, 100% {
+        transform: scaleX(-1) translateX(0);
+    }
+
+    80% {
+        transform: scaleX(-1) translateX(4px);
+    }
+
+    90% {
+        transform: scaleX(-1) translateX(1px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .haupt-bereich {
+        padding: 14px 8px 36px;
+    }
+
+    .rechner {
+        padding: 18px;
+    }
+
+    .eingabe {
+        padding: 16px;
+    }
+
+    .oktette {
+        gap: 4px;
+    }
+
+        .oktette input {
+            height: 46px;
+            font-size: 17px;
+        }
+
+    .ergebnis {
+        padding: 16px;
+    }
+
+        .ergebnis td {
+            display: block;
+            width: auto;
+            padding: 2px 0;
+            border-bottom: 0;
+        }
+
+            .ergebnis td:first-child {
+                width: auto;
+                padding-top: 10px;
+            }
+}
+
+/* ---------- Nur Seite 2 ---------- */
+.seite {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 90vh;
+    padding: 0;
+}
+
+.seiten-pfeil {
+    align-self: flex-start;
+    padding: 6px 20px 6px 8px;
+}
