@@ -10,7 +10,6 @@ public class IPv6BereichResult
     public bool IsValid { get; set; }
     public string ErrorMessage { get; set; } = "";
 
-    // z. B. 2001:db8::/32
     public string CidrNotation { get; set; } = "";
     public string FirstAddress { get; set; } = "";
     public string LastAddress { get; set; } = "";
@@ -18,7 +17,6 @@ public class IPv6BereichResult
     public string LastAddressExpanded { get; set; } = "";
     public BigInteger TotalAddresses { get; set; }
 
-    // Anzahl der /64-Netze im Bereich (nur sinnvoll, wenn das Präfix 64 oder kleiner ist)
     public BigInteger Networks64 { get; set; }
     public bool HasNetworks64 { get; set; }
 
@@ -52,7 +50,6 @@ public static class CIDR_Bereichs_Rechner_IPv6
 
         UInt128 ip = BytesToUInt128(address.GetAddressBytes());
 
-        // Bei Präfix 0 darf nicht um 128 geschoben werden (C# würde dann gar nicht schieben)
         UInt128 mask = prefixLength == 0 ? UInt128.Zero : UInt128.MaxValue << (128 - prefixLength);
         UInt128 first = ip & mask;
         UInt128 last = first | ~mask;
@@ -95,10 +92,8 @@ public static class CIDR_Bereichs_Rechner_IPv6
         return bytes;
     }
 
-    // Kurzform, z. B. 2001:db8::1
     private static string ToIPv6(UInt128 wert) => new IPAddress(ToBytes(wert)).ToString();
 
-    // Volle Schreibweise, z. B. 2001:0db8:0000:0000:0000:0000:0000:0001
     private static string ToExpanded(UInt128 wert)
     {
         byte[] b = ToBytes(wert);
