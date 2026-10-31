@@ -26,12 +26,10 @@ Dieses Projekt bietet eine Benutzeroberfläche für Netzwerkberechnungen und die
 
 | Name / Alias | Rolle / Hauptaufgaben |
 |---|---|
-| **Bastian** | Projekt-Setup, Sebnet_Calculator, Projekt Erweiterung, CSS zweite Seite, js Datei erstellen, Export Funktion, CIDR IPv4/IPv6 verbessert, EUI64, Wrkzeug   |
+| **Bastian** | Projekt-Setup, Sebnet_Calculator, Projekt Erweiterung, CSS zweite Seite, js Datei erstellen, Export Funktion, CIDR IPv4/IPv6 verbessert, EUI64, Werkzeug   |
 | **Mahdi** | HTML Hauptwebseite, Hostberechnung, HTML zweite Seite, CIDR Unterstützung, Stapel razor/css, Stapel berechnung, Fix erste /zweite Seite / css, |
 | **Marten** | IP-Validierung & Logik, CIDR unterstützung, GeoLocation, DNS, Netz_Befehle |
 | **Hassan** | Dokumentation/Presentaion & CSS-Styling, Binärdarstellung, IPv6 Converter, VlSM  |
-*(Personen und Aufgaben können jederzeit angepasst werden.)*
-
 ---
 
 ##  Schnellstart & Installation
