@@ -6,6 +6,7 @@ namespace IP_Adressen_Tool.Components.Pages.Nebenseite;
 
 public class IPv6Result
 {
+    // defalt valu false
     public bool IsValid { get; set; }
     public string ErrorMessage { get; set; } = "";
     public string MappedIPv6 { get; set; } = "";          
@@ -52,6 +53,7 @@ public static class IPv4_zu_IPv6_Converter
                               $"{mappedBytes[12]:x2}{mappedBytes[13]:x2}:{mappedBytes[14]:x2}{mappedBytes[15]:x2}";
 
             string hexPart = $"{bytes[0]:X2}{bytes[1]:X2}:{bytes[2]:X2}{bytes[3]:X2}";
+            // falshe beschreibung 
             result.Translated6to4 = $"2002:{hexPart}::";
 
             result.BinaryRepresentation = $"{System.Convert.ToString(bytes[0], 2).PadLeft(8, '0')}." +
