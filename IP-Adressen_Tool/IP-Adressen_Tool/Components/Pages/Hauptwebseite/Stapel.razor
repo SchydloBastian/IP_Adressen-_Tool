@@ -1,5 +1,44 @@
-﻿<h3>Stapel</h3>
+﻿@page "/Stapel"
+@rendermode InteractiveServer
+@inject IJSRuntime JS
+<div class="seite"><div class="haupt-bereich"><a class="seiten-pfeil" href="/IP-Tool"><img src="image/pfeil-icon-svg-download-png-97525.png" alt="Pfeil" class="pfeil-bild-zurueck" /><span>Zurück zum IP-Rechner</span></a><div class="rechner"><h2>Stapel-Berechnung</h2><div class="eingabe"><label>IP oder IP/CIDR (eine pro Zeile):</label><textarea class="netz-text" rows="8" placeholder="192.168.1.10/24" @bind="eingabeText" @bind:event="oninput"></textarea><div class="cidr-zeile"><label>Standard-CIDR, wenn keins dasteht:</label><span class="cidr-badge">/@standardCidr (@CIDR_Unterstuetzung.CidrToSubnetMask(standardCidr))</span></div><input class="cidr-regler" type="range" min="0" max="32" @bind="standardCidr" @bind:event="oninput" /><button type="button" @onclick="Berechnen">Berechnen</button></div>
+            @if (ergebnis is not null)
+            {
+                if (ergebnis.Zeilen.Count == 0)
+                {
+                    <div class="fehler">Bitte mindestens eine Zeile eingeben.</div>                }
+                else                {
+                    <div class="ergebnis"><h3>Ergebnis: @ergebnis.Gueltig gültig, @ergebnis.Fehlerhaft fehlerhaft</h3><div class="tabelle-rahmen"><table class="stapel-tabelle"><thead><tr><th>Zeile</th><th>Eingabe</th><th>Netz</th><th>Maske</th><th>Erster Host</th><th>Letzter Host</th><th>Broadcast</th><th>Hosts</th><th>Art</th></tr></thead><tbody>                                    @foreach (var zeile in ergebnis.Zeilen)
+                                    {
+                                        if (zeile.IsValid)
+                                        {
+                                            <tr><td>@zeile.Nummer</td><td class="mono">@zeile.Eingabe</td><td class="mono">@(zeile.Daten.Netz + zeile.Daten.CIDR)</td><td class="mono">@zeile.Daten.Maske</td><td class="mono">@zeile.Daten.ErsterHost</td><td class="mono">@zeile.Daten.LetzterHost</td><td class="mono">@zeile.Daten.Broadcast</td><td>@zeile.Daten.NutzbareHosts</td><td>@zeile.Daten.Art</td></tr>                                        }
+                                        else                                        {
+                                            <tr class="zeile-fehler"><td>@zeile.Nummer</td><td class="mono">@zeile.Eingabe</td><td colspan="7">@zeile.ErrorMessage</td></tr>                                        }
+                                    }
+                                </tbody></table></div>
+                        @if (!string.IsNullOrEmpty(ergebnis.Hinweis))
+                        {
+                            <div class="zusatz-text">@ergebnis.Hinweis</div>                        }
 
+                        <div class="export-zeile"><button type="button" class="ip-btn" @onclick="ExportCsv">CSV</button></div></div>                }
+            }
+        </div></div></div>
 @code {
+    private string eingabeText = "192.168.1.10/24\n10.0.0.5\n8.8.8.8/32";
+    private int standardCidr = 24;
+    private StapelResult? ergebnis;
 
+    private void Berechnen()
+    {
+        ergebnis = Stapel_Berechnung.Berechne(eingabeText, standardCidr);
+    }
+
+    private async Task ExportCsv()
+    {
+        if (ergebnis is null) return;
+        await Ergebnis_Export.HerunterladenAsync(JS, "stapel-ergebnis.csv",
+            Ergebnis_Export.IPv4Csv(ergebnis.ExportListe()), Ergebnis_Export.MimeCsv);
+    }
 }
+ 
