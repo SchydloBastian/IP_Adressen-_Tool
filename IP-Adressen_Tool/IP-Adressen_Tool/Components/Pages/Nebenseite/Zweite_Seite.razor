@@ -1,5 +1,8 @@
 ﻿@page "/Zweite-Seite"
 @using IP_Adressen_Tool.Components.Pages.Nebenseite
+@using IP_Adressen_Tool.Components.Pages.Hauptwebseite
+@using System.Net
+@inject IJSRuntime JS
 @rendermode InteractiveServer
 
 <div class="seite">
@@ -72,6 +75,57 @@
                             <td class="mono">@shortVersion</td>
                         </tr>
                     </table>
+
+                    <div class="export-zeile">
+                        <button type="button" class="ip-btn" @onclick="ExportTxt">TXT</button>
+                        <button type="button" class="ip-btn" @onclick="ExportCsv">CSV</button>
+                        <button type="button" class="ip-btn" @onclick="ExportJson">JSON</button>
+                        <button type="button" class="ip-btn" onclick="window.print()">Drucken</button>
+                    </div>
+                </div>
+            }
+
+            <h3 class="zusatz-titel">EUI-64 aus MAC-Adresse</h3>
+            <div class="eingabe">
+                <label>MAC-Adresse:</label>
+                <input type="text" class="ipv6-input" placeholder="00:11:22:33:44:55" @bind="macInput" @bind:event="oninput" />
+
+                <label>IPv6-Präfix (optional, /64):</label>
+                <input type="text" class="ipv6-input" placeholder="2001:db8:1:1::/64" @bind="euiPraefix" @bind:event="oninput" />
+
+                <button type="button" @onclick="EuiBerechnen">EUI-64 berechnen</button>
+
+                @if (euiResult is not null && !euiResult.IsValid)
+                {
+                    <div class="fehler">@euiResult.ErrorMessage</div>
+                }
+            </div>
+
+            @if (euiResult is not null && euiResult.IsValid)
+            {
+                <div class="ergebnis">
+                    <h3>EUI-64 Ergebnis</h3>
+                    <table>
+                        <tr>
+                            <td>MAC-Adresse</td>
+                            <td class="mono">@euiResult.Mac</td>
+                        </tr>
+                        <tr>
+                            <td>Interface-ID (EUI-64)</td>
+                            <td class="mono">@euiResult.InterfaceId</td>
+                        </tr>
+                        @if (euiResult.HatAdresse)
+                        {
+                            <tr>
+                                <td>IPv6-Adresse (komprimiert)</td>
+                                <td class="mono">@euiResult.AdresseKomprimiert</td>
+                            </tr>
+                            <tr>
+                                <td>IPv6-Adresse (ausgeschrieben)</td>
+                                <td class="mono">@euiResult.AdresseExpandiert</td>
+                            </tr>
+                        }
+                    </table>
                 </div>
             }
         </div>
@@ -88,6 +142,12 @@
     private int prefixLength = 64;
     private IPv6CIDRResult result = new();
     private IPv6BereichResult? bereich;
+
+    private ExportIPv6? exportDaten;
+
+    private string macInput = "";
+    private string euiPraefix = "";
+    private EUI64Result? euiResult;
 
     protected override void OnInitialized()
     {
@@ -106,5 +166,62 @@
     {
         result = IPv6_CIDR_Rechner.Calculate(ipInput, prefixLength);
         bereich = CIDR_Bereichs_Rechner_IPv6.Calculate(ipInput, prefixLength);
+        exportDaten = result.IsValid ? ExportDatenBauen() : null;
+    }
+
+    private void EuiBerechnen()
+    {
+        euiResult = EUI64_Rechner.Berechne(macInput, euiPraefix);
+    }
+
+    // Fertige Werte zum Zeitpunkt von "Berechnen". Reverse-DNS und Standort gibt es für IPv6 nicht, die Felder bleiben leer.
+    private ExportIPv6 ExportDatenBauen()
+    {
+        IPAddress adresse = IPAddress.Parse(ipInput.Trim());
+        byte[] b = adresse.GetAddressBytes();
+
+        return new ExportIPv6
+        {
+            Eingabe = ipInput.Trim(),
+            Praefix = $"/{prefixLength}",
+            Art = IPv6Art(adresse, b),
+            Komprimiert = adresse.ToString(),
+            Expandiert = string.Join(":", Enumerable.Range(0, 8).Select(i => $"{b[i * 2]:x2}{b[i * 2 + 1]:x2}")),
+            Netz = result.NetworkAddress,
+            LetzteAdresse = result.LastHost,
+            Anzahl = result.TotalHosts.ToString(),
+            EingebetteteIPv4 = adresse.IsIPv4MappedToIPv6 ? adresse.MapToIPv4().ToString() : ""
+        };
+    }
+
+    private static string IPv6Art(IPAddress a, byte[] b)
+    {
+        if (a.Equals(IPAddress.IPv6Loopback)) return "Loopback";
+        if (a.Equals(IPAddress.IPv6Any)) return "Unspezifiziert";
+        if (a.IsIPv4MappedToIPv6) return "IPv4-gemappt (::ffff:0:0/96)";
+        if (a.IsIPv6LinkLocal) return "Link-Local (fe80::/10)";
+        if (a.IsIPv6Multicast) return "Multicast (ff00::/8)";
+        if ((b[0] & 0xFE) == 0xFC) return "Unique Local (fc00::/7)";
+        if (b[0] == 0x20 && b[1] == 0x01 && b[2] == 0x0d && b[3] == 0xb8) return "Dokumentation (2001:db8::/32)";
+        if ((b[0] & 0xE0) == 0x20) return "Global Unicast (2000::/3)";
+        return "Reserviert";
+    }
+
+    private async Task ExportTxt()
+    {
+        if (exportDaten is null) return;
+        await Ergebnis_Export.HerunterladenAsync(JS, "ipv6-ergebnis.txt", Ergebnis_Export.IPv6Txt(new[] { exportDaten }), Ergebnis_Export.MimeTxt);
+    }
+
+    private async Task ExportCsv()
+    {
+        if (exportDaten is null) return;
+        await Ergebnis_Export.HerunterladenAsync(JS, "ipv6-ergebnis.csv", Ergebnis_Export.IPv6Csv(new[] { exportDaten }), Ergebnis_Export.MimeCsv);
+    }
+
+    private async Task ExportJson()
+    {
+        if (exportDaten is null) return;
+        await Ergebnis_Export.HerunterladenAsync(JS, "ipv6-ergebnis.json", Ergebnis_Export.IPv6Json(new[] { exportDaten }), Ergebnis_Export.MimeJson);
     }
 }
