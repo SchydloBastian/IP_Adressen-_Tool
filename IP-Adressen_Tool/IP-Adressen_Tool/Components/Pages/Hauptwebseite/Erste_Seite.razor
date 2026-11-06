@@ -1,150 +1,394 @@
 ﻿@page "/IP-Tool"
+
 @rendermode InteractiveServer
+
 @using IP_Adressen_Tool.Components.Pages.Nebenseite
 
+@inject IJSRuntime JS
+ 
 <div class="haupt-bereich">
-    <div class="rechner">
-        <h2>IP-Subnetz-Rechner</h2>
-
+<div class="rechner">
+<h2>IP-Subnetz-Rechner</h2>
+ 
         <div class="eingabe">
-            <label>IPv4-Adresse (4 Oktette):</label>
-            <div class="oktette">
-                <input class="oktett1" type="number" min="0" max="255" @bind="octet1" @bind:event="oninput" onfocus="this.select()" />
-                <span>.</span>
-                <input class="oktett2" type="number" min="0" max="255" @bind="octet2" @bind:event="oninput" onfocus="this.select()" />
-                <span>.</span>
-                <input class="oktett3" type="number" min="0" max="255" @bind="octet3" @bind:event="oninput" onfocus="this.select()" />
-                <span>.</span>
-                <input class="oktett4" type="number" min="0" max="255" @bind="octet4" @bind:event="oninput" onfocus="this.select()" />
-            </div>
-
+<label>IPv4-Adresse (4 Oktette):</label>
+<div class="oktette">
+<input class="oktett1" type="number" min="0" max="255" @bind="octet1" @bind:event="oninput" onfocus="this.select()" />
+<span>.</span>
+<input class="oktett2" type="number" min="0" max="255" @bind="octet2" @bind:event="oninput" onfocus="this.select()" />
+<span>.</span>
+<input class="oktett3" type="number" min="0" max="255" @bind="octet3" @bind:event="oninput" onfocus="this.select()" />
+<span>.</span>
+<input class="oktett4" type="number" min="0" max="255" @bind="octet4" @bind:event="oninput" onfocus="this.select()" />
+</div>
+ 
             <div class="cidr-zeile">
-                <label>CIDR-Präfix / Subnetzmaske:</label>
-                <span class="cidr-badge">/@cidrInput (@CIDR_Unterstuetzung.CidrToSubnetMask(cidrInput))</span>
-            </div>
-            <input class="cidr-regler" type="range" min="0" max="32" @bind="cidrInput" @bind:event="oninput" />
-
+<label>CIDR-Präfix / Subnetzmaske:</label>
+<span class="cidr-badge">/@cidrInput (@CIDR_Unterstuetzung.CidrToSubnetMask(cidrInput))</span>
+</div>
+<input class="cidr-regler" type="range" min="0" max="32" @bind="cidrInput" @bind:event="oninput" />
+ 
             <button type="button" @onclick="Berechnen">Berechnen</button>
-
+ 
             @if (!string.IsNullOrEmpty(errorMessage))
+
             {
-                <div class="fehler">@errorMessage</div>
+<div class="fehler">@errorMessage</div>
+
             }
-        </div>
-        <div class="eigene-ip-bereich">
-            <button type="button" class="ip-btn" @onclick="EigeneIpInOktetteEinfuegen">
+</div>
+<div class="eigene-ip-bereich">
+<button type="button" class="ip-btn" @onclick="EigeneIpInOktetteEinfuegen">
+
                 @if (string.IsNullOrEmpty(erkannteIp))
+
                 {
-                    <span>Eigene IP ermitteln & einfügen</span>
+<span>Eigene IP ermitteln & einfügen</span>
+
                 }
+
                 else
+
                 {
-                    <span>Eigene IP (@erkannteIp) einfügen</span>
+<span>Eigene IP (@erkannteIp) einfügen</span>
+
                 }
-            </button>
-        </div>
-
+</button>
+<a class="ip-btn ip-link" href="/Stapel">Stapel-Berechnung</a>
+<a class="ip-btn ip-link" href="/Werkzeuge">Werkzeuge</a>
+</div>
+ 
         @if (isCalculated && subnetResult is not null)
-        {
-            <div class="ergebnis">
-                <h3>Berechnungsergebnisse</h3>
-                <table>
-                    <tr><td>Eingegebene IP-Adresse</td><td>@fullIpAddress / @cidrInput</td></tr>
-                    <tr><td>Binärdarstellung (IP)</td><td class="mono">@binaryIp</td></tr>
-                    <tr><td>Binärdarstellung (Subnetzmaske)</td><td class="mono">@binaryMask</td></tr>
-                    <tr><td>Adressklasse</td><td>@addressClass</td></tr>
-                    <tr><td>Subnetzmaske (CIDR / Dezimal)</td><td>@subnetResult.SubnetMask (/ @cidrInput)</td></tr>
-                    <tr><td>Netzwerkadresse</td><td>@subnetResult.NetworkAddress</td></tr>
-                    <tr><td>Broadcast-Adresse</td><td>@subnetResult.BroadcastAddress</td></tr>
-                    <tr><td>Nutzbarer Host-Bereich</td><td>@subnetResult.FirstHost – @subnetResult.LastHost</td></tr>
-                    <tr><td>Maximal nutzbare Hosts</td><td>@subnetResult.UsableHosts</td></tr>
-                    <tr><td>CIDR-Notation</td><td class="mono">@bereich?.CidrNotation</td></tr>
-                    <tr><td>CIDR-Adressbereich</td><td class="mono">@bereich?.Range</td></tr>
-                    <tr><td>Wildcard-Maske</td><td class="mono">@bereich?.WildcardMask</td></tr>
-                    <tr><td>Gesamtanzahl Adressen</td><td>@bereich?.TotalAddressesText</td></tr>
-                    <tr><td>Standort</td><td>@standort?.Text</td></tr>
-                    <tr><td>Land</td><td>@standort?.Land</td></tr>
-                    <tr><td>Region</td><td>@standort?.Region</td></tr>
-                    <tr><td>Stadt</td><td>@standort?.Stadt</td></tr>
-                    <tr><td>Anbieter</td><td>@standort?.Anbieter</td></tr>
-                    <tr><td>Koordinaten</td><td>@standort?.Koordinaten</td></tr>
-                </table>
-            </div>
-        }
-    </div>
 
-    <a class="seiten-pfeil" href="/Zweite-Seite?ip=@($"{octet1}.{octet2}.{octet3}.{octet4}")">
-        <span>Zum IPv6-Rechner</span>
-        <img src="image/pfeil-icon-svg-download-png-97525.png" alt="Pfeil" class="pfeil-bild" />
-    </a>
+        {
+<div class="ergebnis">
+<h3>Berechnungsergebnisse</h3>
+<table>
+<tr><td>Eingegebene IP-Adresse</td><td>@fullIpAddress / @cidrInput</td></tr>
+<tr><td>Binärdarstellung (IP)</td><td class="mono">@binaryIp</td></tr>
+<tr><td>Binärdarstellung (Subnetzmaske)</td><td class="mono">@binaryMask</td></tr>
+<tr><td>Adressklasse</td><td>@addressClass</td></tr>
+<tr><td>Subnetzmaske (CIDR / Dezimal)</td><td>@subnetResult.SubnetMask (/ @cidrInput)</td></tr>
+<tr><td>Netzwerkadresse</td><td>@subnetResult.NetworkAddress</td></tr>
+<tr><td>Broadcast-Adresse</td><td>@subnetResult.BroadcastAddress</td></tr>
+<tr><td>Nutzbarer Host-Bereich</td><td>@subnetResult.FirstHost – @subnetResult.LastHost</td></tr>
+<tr><td>Maximal nutzbare Hosts</td><td>@subnetResult.UsableHosts</td></tr>
+<tr><td>CIDR-Notation</td><td class="mono">@bereich?.CidrNotation</td></tr>
+<tr><td>CIDR-Adressbereich</td><td class="mono">@bereich?.Range</td></tr>
+<tr><td>Wildcard-Maske</td><td class="mono">@bereich?.WildcardMask</td></tr>
+<tr><td>Gesamtanzahl Adressen</td><td>@bereich?.TotalAddressesText</td></tr>
+<tr><td>Standort</td><td>@standort?.Text</td></tr>
+<tr><td>Land</td><td>@standort?.Land</td></tr>
+<tr><td>Region</td><td>@standort?.Region</td></tr>
+<tr><td>Stadt</td><td>@standort?.Stadt</td></tr>
+<tr><td>Anbieter</td><td>@standort?.Anbieter</td></tr>
+<tr><td>Koordinaten</td><td>@standort?.Koordinaten</td></tr>
+<tr>
+<td>DNS-Name</td>
+<td>
+
+                            @dnsText
+<button type="button" class="ip-btn" @onclick="DnsAbfragen" disabled="@dnsLaeuft">DNS abfragen</button>
+</td>
+</tr>
+</table>
+ 
+                <div class="zusatz-block">
+<h3>Host an Position</h3>
+<div class="zusatz-zeile">
+<input class="zusatz-feld" type="number" min="1" @bind="hostNummer" @bind:event="oninput" onfocus="this.select()" />
+<button type="button" class="ip-btn" @onclick="HostAnPositionBerechnen">Host anzeigen</button>
 </div>
 
+                    @if (hostPosition is not null)
+
+                    {
+
+                        if (hostPosition.IsValid)
+
+                        {
+<div class="zusatz-text">Host Nr. @(hostPosition.Nummer): <span class="mono">@hostPosition.Adresse</span></div>
+
+                        }
+
+                        else
+
+                        {
+<div class="fehler">@hostPosition.ErrorMessage</div>
+
+                        }
+
+                    }
+</div>
  
+                @{
+
+                    var befehle = Netz_Befehle.Erzeugen(subnetResult.NetworkAddress, berechneterCidr, gateway);
+
+                }
+<div class="zusatz-block">
+<h3>Routing-Befehle</h3>
+<div class="zusatz-zeile">
+<input class="zusatz-feld" type="text" placeholder="Gateway (optional), z. B. 192.168.1.1" @bind="gateway" @bind:event="oninput" />
+</div>
+
+                    @if (!befehle.IsValid)
+
+                    {
+<div class="fehler">@befehle.ErrorMessage</div>
+
+                    }
+
+                    else
+
+                    {
+<div class="befehl-titel">Linux (ip route)</div>
+<pre class="befehl">@befehle.Linux</pre>
+<div class="befehl-titel">Windows (route add)</div>
+<pre class="befehl">@befehle.Windows</pre>
+<div class="befehl-titel">Cisco (ip route)</div>
+<pre class="befehl">@befehle.Cisco</pre>
+
+                    }
+<div class="zusatz-text">Die Befehle werden nur angezeigt. Es wird nichts an Geräte gesendet.</div>
+</div>
+ 
+                <div class="export-zeile">
+<button type="button" class="ip-btn" @onclick="ExportTxt">TXT</button>
+<button type="button" class="ip-btn" @onclick="ExportCsv">CSV</button>
+<button type="button" class="ip-btn" @onclick="ExportJson">JSON</button>
+<button type="button" class="ip-btn" onclick="window.print()">Drucken</button>
+</div>
+</div>
+
+        }
+</div>
+ 
+    <a class="seiten-pfeil" href="/Zweite-Seite?ip=@($"{octet1}.{octet2}.{octet3}.{octet4}")">
+<span>Zum IPv6-Rechner</span>
+<img src="image/pfeil-icon-svg-download-png-97525.png" alt="Pfeil" class="pfeil-bild" />
+</a>
+</div>
+ 
+
+
 @code {
+
     private int octet1 = 192;
+
     private int octet2 = 168;
+
     private int octet3 = 1;
+
     private int octet4 = 10;
+
     private int cidrInput = 24;
-
+ 
     private string errorMessage = "";
+
     private string addressClass = "";
+
     private string binaryIp = "";
+
     private string binaryMask = "";
+
     private bool isCalculated;
+
     private SubnetResult? subnetResult;
+
     private CidrBereichIPv4Result? bereich;
+
     private string fullIpAddress => $"{octet1}.{octet2}.{octet3}.{octet4}";
+
     private GeolocationResult? standort;
-
+ 
     private string erkannteIp = "";
+ 
+    // Stand zum Zeitpunkt von "Berechnen" (für Host-Position, Befehle, DNS und Export)
 
+    private string berechneteIp = "";
+
+    private int berechneterCidr;
+ 
+    private long hostNummer = 1;
+
+    private HostPositionResult? hostPosition;
+ 
+    private string gateway = "";
+ 
+    private string dnsText = "Noch nicht abgefragt";
+
+    private bool dnsLaeuft;
+ 
+    private ExportIPv4? exportDaten;
+ 
     protected override async Task OnInitializedAsync()
-    {
-        erkannteIp = await EigeneIP_Helper.GetOeffentlicheIPAsync();
-    }
 
-    private async Task Berechnen()
     {
+
+        erkannteIp = await EigeneIP_Helper.GetOeffentlicheIPAsync();
+
+    }
+ 
+    private async Task Berechnen()
+
+    {
+
         errorMessage = "";
+
         isCalculated = false;
+
         subnetResult = null;
+
         bereich = null;
+
         standort = null;
 
-        if (octet1 < 0 || octet1 > 255 || octet2 < 0 || octet2 > 255 || octet3 < 0 || octet3 > 255 || octet4 < 0 || octet4 > 255)
-        {
-            errorMessage = "Jedes Oktett muss zwischen 0 und 255 liegen.";
-            return;
-        }
+        hostPosition = null;
 
-        if (!IP_Validierung.TryValidateIPv4(fullIpAddress, out errorMessage, out addressClass))
+        exportDaten = null;
+
+        dnsText = "Noch nicht abgefragt";
+ 
+        if (octet1 < 0 || octet1 > 255 || octet2 < 0 || octet2 > 255 || octet3 < 0 || octet3 > 255 || octet4 < 0 || octet4 > 255)
+
         {
+
+            errorMessage = "Jedes Oktett muss zwischen 0 und 255 liegen.";
+
             return;
+
         }
+ 
+        if (!IP_Validierung.TryValidateIPv4(fullIpAddress, out errorMessage, out addressClass))
+
+        {
+
+            return;
+
+        }
+ 
+        berechneteIp = fullIpAddress;
+
+        berechneterCidr = cidrInput;
 
         subnetResult = Subnet_Calculator.Calculate(fullIpAddress, cidrInput);
+
         bereich = CIDR_Bereichs_Rechner_IPv4.Calculate(fullIpAddress, cidrInput);
+
         binaryIp = Binaerdarstellung.ToBinary(fullIpAddress);
+
         binaryMask = Binaerdarstellung.ToBinary(subnetResult.SubnetMask);
+
         standort = await IP_Geolocation.LookupAsync(fullIpAddress);
+ 
+        exportDaten = Stapel_Berechnung.ExportDaten(berechneteIp, berechneterCidr);
+
+        exportDaten.Standort = standort.Text;
+
+        exportDaten.Anbieter = standort.Anbieter;
+ 
         isCalculated = true;
-    }
 
-    private void EigeneIpInOktetteEinfuegen()
+    }
+ 
+    private void HostAnPositionBerechnen()
+
     {
-        if (string.IsNullOrWhiteSpace(erkannteIp))
+
+        if (subnetResult is null) return;
+
+        hostPosition = Host_Berechnung.HostAnPosition(subnetResult.NetworkAddress, berechneterCidr, hostNummer);
+
+    }
+ 
+    // Nur auf Klick: fragt den DNS-Namen (PTR) der berechneten IP ab
+
+    private async Task DnsAbfragen()
+
+    {
+
+        if (string.IsNullOrEmpty(berechneteIp)) return;
+ 
+        dnsLaeuft = true;
+
+        dnsText = "Abfrage läuft …";
+ 
+        DnsLookupResult antwort = await DNS_Lookup.AbfragenAsync(berechneteIp);
+
+        dnsText = antwort.Text;
+
+        if (exportDaten is not null)
+
         {
+
+            exportDaten.ReverseDns = antwort.Gefunden ? antwort.Text : "";
+
+        }
+ 
+        dnsLaeuft = false;
+
+    }
+ 
+    private async Task ExportTxt()
+
+    {
+
+        if (exportDaten is null) return;
+
+        await Ergebnis_Export.HerunterladenAsync(JS, "ip-ergebnis.txt", Ergebnis_Export.IPv4Txt(new[] { exportDaten }), Ergebnis_Export.MimeTxt);
+
+    }
+ 
+    private async Task ExportCsv()
+
+    {
+
+        if (exportDaten is null) return;
+
+        await Ergebnis_Export.HerunterladenAsync(JS, "ip-ergebnis.csv", Ergebnis_Export.IPv4Csv(new[] { exportDaten }), Ergebnis_Export.MimeCsv);
+
+    }
+ 
+    private async Task ExportJson()
+
+    {
+
+        if (exportDaten is null) return;
+
+        await Ergebnis_Export.HerunterladenAsync(JS, "ip-ergebnis.json", Ergebnis_Export.IPv4Json(new[] { exportDaten }), Ergebnis_Export.MimeJson);
+
+    }
+ 
+    private void EigeneIpInOktetteEinfuegen()
+
+    {
+
+        if (string.IsNullOrWhiteSpace(erkannteIp))
+
+        {
+
             erkannteIp = EigeneIP_Helper.GetLokaleIP();
+
+        }
+ 
+        var teile = erkannteIp.Split('.');
+
+        if (teile.Length == 4)
+
+        {
+
+            int.TryParse(teile[0], out octet1);
+
+            int.TryParse(teile[1], out octet2);
+
+            int.TryParse(teile[2], out octet3);
+
+            int.TryParse(teile[3], out octet4);
+
         }
 
-        var teile = erkannteIp.Split('.');
-        if (teile.Length == 4)
-        {
-            int.TryParse(teile[0], out octet1);
-            int.TryParse(teile[1], out octet2);
-            int.TryParse(teile[2], out octet3);
-            int.TryParse(teile[3], out octet4);
-        }
     }
+
 }
+ 

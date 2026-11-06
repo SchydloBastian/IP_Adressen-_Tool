@@ -673,3 +673,192 @@
     align-self: flex-start;
     padding: 6px 20px 6px 8px;
 }
+
+/* ---------- Zweitrangiger Button (wie Seite 1) ---------- */
+.ip-btn {
+    width: auto;
+    height: auto;
+    padding: 9px 16px;
+    border: 1.5px solid var(--linie);
+    border-radius: 10px;
+    background: #ffffff;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.18s ease, color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+    .ip-btn:hover {
+        border-color: var(--akzent);
+        color: var(--akzent);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(37, 99, 235, 0.14);
+    }
+
+    .ip-btn:active {
+        transform: translateY(0);
+    }
+
+
+/* ---------- Neue Zusatzblöcke (Export, Host-Position, Befehle, EUI-64, Stapel, Werkzeuge) ---------- */
+.zusatz-block {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid var(--linie);
+}
+
+    .zusatz-block h3 {
+        margin: 0 0 12px;
+        font-size: 16px;
+    }
+
+.zusatz-titel {
+    margin: 28px 0 12px;
+    font-size: 18px;
+    color: var(--text);
+}
+
+.zusatz-zeile {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.zusatz-feld {
+    flex: 1 1 180px;
+    min-width: 0;
+    height: 40px;
+    padding: 0 12px;
+    box-sizing: border-box;
+    border: 1.5px solid var(--linie);
+    border-radius: 10px;
+    background: #ffffff;
+    font-family: var(--mono);
+    font-size: 14px;
+    color: var(--text);
+}
+
+    .zusatz-feld:focus {
+        outline: none;
+        border-color: var(--akzent);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.16);
+    }
+
+.zusatz-text {
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--text);
+}
+
+.befehl-titel {
+    margin-top: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--leise);
+}
+
+.befehl {
+    margin: 6px 0 0;
+    padding: 10px 12px;
+    background: var(--flaeche);
+    border: 1px solid var(--linie);
+    border-radius: 10px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: #123a7a;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.export-zeile {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 22px;
+}
+
+.ip-link {
+    display: inline-block;
+    margin-left: 8px;
+    text-decoration: none;
+}
+
+.netz-text {
+    width: 100%;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    border: 1.5px solid var(--linie);
+    border-radius: 12px;
+    background: #ffffff;
+    font-family: var(--mono);
+    font-size: 15px;
+    color: var(--text);
+    resize: vertical;
+}
+
+    .netz-text:focus {
+        outline: none;
+        border-color: var(--akzent);
+        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.16);
+    }
+
+.tabelle-rahmen {
+    overflow-x: auto;
+}
+
+.stapel-tabelle th {
+    padding: 8px;
+    border-bottom: 2px solid var(--linie);
+    font-size: 12px;
+    text-align: left;
+    white-space: nowrap;
+    color: var(--leise);
+}
+
+.ergebnis .stapel-tabelle td {
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.ergebnis .stapel-tabelle td:first-child {
+    width: auto;
+    padding-right: 8px;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text);
+}
+
+.stapel-tabelle tr {
+    animation: none;
+}
+
+.stapel-tabelle .zeile-fehler td {
+    background: var(--fehler-hell);
+    color: var(--fehler);
+    white-space: normal;
+}
+
+@media (max-width: 600px) {
+    .ergebnis .stapel-tabelle td {
+        display: table-cell;
+    }
+}
+
+
+/* ---------- Druckansicht: Buttons und Eingaben ausblenden ---------- */
+@media print {
+    .export-zeile,
+    .eingabe,
+    .ip-btn,
+    .ip-link,
+    .seiten-pfeil,
+    .eigene-ip-bereich,
+    .zusatz-feld {
+        display: none !important;
+    }
+}
